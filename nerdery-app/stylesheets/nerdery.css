@@ -1,0 +1,286 @@
+body {
+	background-image: 	url("/images/bg.gif");
+	margin: 			0px;
+	font-family: 		Arial, Helvetica, sans-serif;
+	font-size:			10pt;
+}
+
+.sectionHeaderTable {
+	width:				750px;
+}
+.sectionHeaderEndCell {
+	width:				25px;
+}
+.sectionHeaderContentCell {
+}
+
+td.mainContentFrame {
+	border-style: 		solid;
+	border-width: 		1px;
+	border-color: 		#003399;
+	background-color: 	#FFFFFF;
+	border-top: 		none;
+	text-align: 		center;
+}
+td.nothighlighted {
+	background-color: #FFFFFF;
+}
+td.highlighted {
+	background-color: #FFFFCA;
+}
+td.dkgreenhighlighted {
+	background-color: #D5EDD1;
+}
+td.dkyellowhighlighted {
+	background-color: #FBF255;
+}
+td.resultsBar {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #000000;
+}
+td.oddCell {
+	background-color: #FFFFCA;
+}
+td.evenCell {
+	background-color: #FFFFFF;
+}
+td.FormLabel {
+	font-weight: bold;
+	font-size:			11pt;
+}
+
+.SubSectionHeader {
+	padding-left:		35px;
+	font-size:			10pt;
+}
+
+/* TEXT STYLES */
+.sectionHeader {
+	color: #FFFFFF;
+	font-size: 10pt;
+	font-weight: bold;
+}
+
+
+span.boldWhiteMediumText {
+	color: #FFFFFF;
+	font-size: 12pt;
+	font-weight: bold;
+}
+span.greenSectionHeader {
+	color: #006633;
+	font-weight: bold;
+	font-size: 24pt;
+}
+span.greenText {
+	color: #006633;
+	font-size: 11pt;
+}
+span.boldGreenText {
+	color: #006633;
+	font-weight: bold;
+	font-size: 11pt;
+}
+span.smallGreenText {
+	color: #006633;
+	font-size: 10pt;
+}
+span.tinyGreenText {
+	color: #006633;
+	font-size: 7pt;
+}
+span.smallGreenBoldText {
+	color: #006633;
+	font-size: 10pt;
+	font-weight: bold;
+}
+span.blueText {
+	color: #333399;
+	font-size: 11pt;
+}
+span.redText {
+	color: #FF0000;
+	font-size: 11pt;
+}
+span.boldBlueText {
+	color: #333399;
+	font-weight: bold;
+	font-size: 11pt;
+}
+span.smallBlueText {
+	color: #333399;
+	font-size: 10pt;
+}
+span.smallBlueBoldText {
+	color: #333399;
+	font-size: 10pt;
+	font-weight: bold;
+}
+span.smallBlackText {
+	color: #000000;
+	font-size: 10pt;
+}
+span.errorText {
+	color: #CC0000;
+	font-size: 11pt;
+}
+span.smallRedText {
+	color: #CC0000;
+	font-size: 10pt;
+}
+span.offlineUser {
+	color: #444444;
+	font-size: 11pt;
+	font-style: italic;
+}
+span.highlightedText {
+	background-color:  #FFCC33;
+}
+span.itemHeader {
+	font-size:		11pt;
+	color:			#006633;
+	font-weight:	bold;
+}
+span.itemText {
+	font-size:		9pt;
+}
+.smallModified {
+	font-size:		8pt;
+	color:			#006633;
+	font-weight:	bold;
+}
+.smallUnmodified {
+	font-size:		8pt;
+	color:			#006633;
+}
+
+/*  LINK STYLES */
+a {
+	color:  #006633;
+}
+
+a.modifiedLink:link {
+	color: #006633;
+	font-weight:	bold;
+}
+a.modifiedLink:hover {
+	color: #006633;
+	font-weight:	bold;
+}
+a.modifiedLink:active {
+	color: #006633;
+	font-weight:	bold;
+}
+a.modifiedLink:visited {
+	color: #006633;
+	font-weight:	bold;
+}
+
+a.greenLink:link {
+	color: #006633;
+}
+a.greenLink:hover {
+	color: #006633;
+}
+a.greenLink:active {
+	color: #006633;
+}
+a.greenLink:visited {
+	color: #006633;
+}
+
+a.boldGreenLink:link {
+	color: #006633;
+	font-weight: bold;
+}
+a.boldGreenLink:hover {
+	color: #006633;
+	font-weight: bold;
+}
+a.boldGreenLink:active {
+	color: #006633;
+	font-weight: bold;
+}
+a.boldGreenLink:visited {
+	color: #006633;
+	font-weight: bold;
+}
+
+a.smallGreenLink:link {
+	color: #006633;
+	font-size: 10pt;
+}
+a.smallGreenLink:hover {
+	color: #006633;
+	font-size: 10pt;
+}
+a.smallGreenLink:active {
+	color: #006633;
+	font-size: 10pt;
+}
+a.smallGreenLink:visited {
+	color: #006633;
+	font-size: 10pt;
+}
+
+a.smallBoldGreenLink {
+	color: #006633;
+	font-size: 10pt;
+	font-weight: bold;
+}
+
+a.boldWhiteLink {
+	color: #FFFFFF;
+	font-weight: bold;
+}
+
+a.blueLink:link {
+	color: #333399;
+}
+a.blueLink:hover {
+	color: #333399;
+}
+a.blueLink:active {
+	color: #333399;
+}
+a.blueLink:visited {
+	color: #333399;
+}
+
+a.boldBlueLink:link {
+	color: #333399;
+	font-weight: bold;
+}
+a.boldBlueLink:hover {
+	color: #333399;
+	font-weight: bold;
+}
+a.boldBlueLink:active {
+	color: #333399;
+	font-weight: bold;
+}
+a.boldBlueLink:visited {
+	color: #333399;
+	font-weight: bold;
+}
+/* control panel dhtml styles */
+div.page_content {
+	z-index:  100;
+}
+div.cp_visible {
+	/*
+	position: absolute;
+	visibility: visible;
+	*/
+	display:	all;
+	z-index:	1;
+}
+div.cp_hidden {
+	/*
+	position: absolute;
+	visibility: hidden;
+	*/
+	display:   none;
+	z-index:  1;
+}
