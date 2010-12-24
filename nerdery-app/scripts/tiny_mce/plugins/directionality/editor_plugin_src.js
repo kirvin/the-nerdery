@@ -1,71 +1,82 @@
-/* Import plugin specific language pack */
-tinyMCE.importPluginLanguagePack('directionality', 'en,sv');
+/**
+ * editor_plugin_src.js
+ *
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
+ */
 
-function TinyMCE_directionality_getControlHTML(control_name) {
-	var safariPatch = '" onclick="';
+(function() {
+	tinymce.create('tinymce.plugins.Directionality', {
+		init : function(ed, url) {
+			var t = this;
 
-	if (tinyMCE.isSafari)
-		safariPatch = "";
+			t.editor = ed;
 
-    switch (control_name) {
-        case "ltr":
-            return '<img id="{$editor_id}_ltr" src="{$pluginurl}/images/ltr.gif" title="{$lang_directionality_ltr_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');' + safariPatch + 'tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mceDirectionLTR\');" />';
+			ed.addCommand('mceDirectionLTR', function() {
+				var e = ed.dom.getParent(ed.selection.getNode(), ed.dom.isBlock);
 
-        case "rtl":
-            return '<img id="{$editor_id}_rtl" src="{$pluginurl}/images/rtl.gif" title="{$lang_directionality_rtl_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');' + safariPatch + 'tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mceDirectionRTL\');" />';
-    }
+				if (e) {
+					if (ed.dom.getAttrib(e, "dir") != "ltr")
+						ed.dom.setAttrib(e, "dir", "ltr");
+					else
+						ed.dom.setAttrib(e, "dir", "");
+				}
 
-    return "";
-}
+				ed.nodeChanged();
+			});
 
-function TinyMCE_directionality_execCommand(editor_id, element, command, user_interface, value) {
-	// Handle commands
-	switch (command) {
-		case "mceDirectionLTR":
-			var inst = tinyMCE.getInstanceById(editor_id);
-			var elm = tinyMCE.getParentElement(inst.getFocusElement(), "p,div,td,h1,h2,h3,h4,h5,h6,pre,address");
+			ed.addCommand('mceDirectionRTL', function() {
+				var e = ed.dom.getParent(ed.selection.getNode(), ed.dom.isBlock);
 
-			if (elm)
-				elm.setAttribute("dir", "ltr");
+				if (e) {
+					if (ed.dom.getAttrib(e, "dir") != "rtl")
+						ed.dom.setAttrib(e, "dir", "rtl");
+					else
+						ed.dom.setAttrib(e, "dir", "");
+				}
 
-			tinyMCE.triggerNodeChange(false);
-			return true;
+				ed.nodeChanged();
+			});
 
-		case "mceDirectionRTL":
-			var inst = tinyMCE.getInstanceById(editor_id);
-			var elm = tinyMCE.getParentElement(inst.getFocusElement(), "p,div,td,h1,h2,h3,h4,h5,h6,pre,address");
+			ed.addButton('ltr', {title : 'directionality.ltr_desc', cmd : 'mceDirectionLTR'});
+			ed.addButton('rtl', {title : 'directionality.rtl_desc', cmd : 'mceDirectionRTL'});
 
-			if (elm)
-				elm.setAttribute("dir", "rtl");
+			ed.onNodeChange.add(t._nodeChange, t);
+		},
 
-			tinyMCE.triggerNodeChange(false);
-			return true;
-	}
+		getInfo : function() {
+			return {
+				longname : 'Directionality',
+				author : 'Moxiecode Systems AB',
+				authorurl : 'http://tinymce.moxiecode.com',
+				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/directionality',
+				version : tinymce.majorVersion + "." + tinymce.minorVersion
+			};
+		},
 
-	// Pass to next handler in chain
-	return false;
-}
+		// Private methods
 
-function TinyMCE_directionality_handleNodeChange(editor_id, node, undo_index, undo_levels, visual_aid, any_selection) {
-	function getAttrib(elm, name) {
-		return elm.getAttribute(name) ? elm.getAttribute(name) : "";
-	}
+		_nodeChange : function(ed, cm, n) {
+			var dom = ed.dom, dir;
 
-	tinyMCE.switchClassSticky(editor_id + '_ltr', 'mceButtonNormal');
-	tinyMCE.switchClassSticky(editor_id + '_rtl', 'mceButtonNormal');
+			n = dom.getParent(n, dom.isBlock);
+			if (!n) {
+				cm.setDisabled('ltr', 1);
+				cm.setDisabled('rtl', 1);
+				return;
+			}
 
-	if (node == null)
-		return;
+			dir = dom.getAttrib(n, 'dir');
+			cm.setActive('ltr', dir == "ltr");
+			cm.setDisabled('ltr', 0);
+			cm.setActive('rtl', dir == "rtl");
+			cm.setDisabled('rtl', 0);
+		}
+	});
 
-	var elm = tinyMCE.getParentElement(node, "p,div,td,h1,h2,h3,h4,h5,h6,pre,address");
-	if (!elm)
-		return;
-
-	var dir = getAttrib(elm, "dir");
-	if (dir == "ltr" || dir == "")
-		tinyMCE.switchClassSticky(editor_id + '_ltr', 'mceButtonSelected');
-	else
-		tinyMCE.switchClassSticky(editor_id + '_rtl', 'mceButtonSelected');
-
-	return true;
-}
+	// Register plugin
+	tinymce.PluginManager.add('directionality', tinymce.plugins.Directionality);
+})();

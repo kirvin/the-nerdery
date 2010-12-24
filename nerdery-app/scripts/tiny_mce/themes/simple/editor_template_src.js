@@ -1,70 +1,85 @@
-function TinyMCE_simple_getEditorTemplate() {
-	var template = new Array();
+/**
+ * editor_template_src.js
+ *
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
+ */
 
-	template['html'] = '\
-<table class="mceEditor" border="0" cellpadding="0" cellspacing="0" width="{$width}" height="{$height}">\
-<tr><td align="center">\
-<span id="{$editor_id}">IFRAME</span>\
-</td></tr>\
-<tr><td class="mceToolbar" align="center" height="1">\
-<img id="{$editor_id}_bold" src="{$themeurl}/images/{$lang_bold_img}" title="{$lang_bold_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'Bold\')">\
-<img id="{$editor_id}_italic" src="{$themeurl}/images/{$lang_italic_img}" title="{$lang_italic_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'Italic\')">\
-<img id="{$editor_id}_underline" src="{$themeurl}/images/{$lang_underline_img}" title="{$lang_underline_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'Underline\')">\
-<img id="{$editor_id}_strikethrough" src="{$themeurl}/images/strikethrough.gif" title="{$lang_striketrough_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'Strikethrough\')">\
-<img src="{$themeurl}/images/spacer.gif" width="1" height="15" class="mceSeparatorLine">\
-<img src="{$themeurl}/images/undo.gif" title="{$lang_undo_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'Undo\')">\
-<img src="{$themeurl}/images/redo.gif" title="{$lang_redo_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'Redo\')">\
-<img src="{$themeurl}/images/spacer.gif" width="1" height="15" class="mceSeparatorLine">\
-<img src="{$themeurl}/images/cleanup.gif" title="{$lang_cleanup_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mceCleanup\')">\
-<img src="{$themeurl}/images/spacer.gif" width="1" height="15" class="mceSeparatorLine">\
-<img id="{$editor_id}_bullist" src="{$themeurl}/images/bullist.gif" title="{$lang_bullist_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'InsertUnorderedList\')">\
-<img id="{$editor_id}_numlist" src="{$themeurl}/images/numlist.gif" title="{$lang_numlist_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'InsertOrderedList\')">\
-</td></tr>\
-</table>';
+(function() {
+	var DOM = tinymce.DOM;
 
-	template['delta_width'] = 0;
-	template['delta_height'] = -20;
+	// Tell it to load theme specific language pack(s)
+	tinymce.ThemeManager.requireLangPack('simple');
 
-	return template;
-}
+	tinymce.create('tinymce.themes.SimpleTheme', {
+		init : function(ed, url) {
+			var t = this, states = ['Bold', 'Italic', 'Underline', 'Strikethrough', 'InsertUnorderedList', 'InsertOrderedList'], s = ed.settings;
 
-function TinyMCE_simple_handleNodeChange(editor_id, node) {
-	// Reset old states
-	tinyMCE.switchClassSticky(editor_id + '_bold', 'mceButtonNormal');
-	tinyMCE.switchClassSticky(editor_id + '_italic', 'mceButtonNormal');
-	tinyMCE.switchClassSticky(editor_id + '_underline', 'mceButtonNormal');
-	tinyMCE.switchClassSticky(editor_id + '_strikethrough', 'mceButtonNormal');
-	tinyMCE.switchClassSticky(editor_id + '_bullist', 'mceButtonNormal');
-	tinyMCE.switchClassSticky(editor_id + '_numlist', 'mceButtonNormal');
+			t.editor = ed;
 
-	// Handle elements
-	do {
-		switch (node.nodeName.toLowerCase()) {
-			case "b":
-			case "strong":
-				tinyMCE.switchClassSticky(editor_id + '_bold', 'mceButtonSelected');
-			break;
+			ed.onInit.add(function() {
+				ed.onNodeChange.add(function(ed, cm) {
+					tinymce.each(states, function(c) {
+						cm.get(c.toLowerCase()).setActive(ed.queryCommandState(c));
+					});
+				});
 
-			case "i":
-			case "em":
-				tinyMCE.switchClassSticky(editor_id + '_italic', 'mceButtonSelected');
-			break;
+				ed.dom.loadCSS(url + "/skins/" + s.skin + "/content.css");
+			});
 
-			case "u":
-				tinyMCE.switchClassSticky(editor_id + '_underline', 'mceButtonSelected');
-			break;
+			DOM.loadCSS((s.editor_css ? ed.documentBaseURI.toAbsolute(s.editor_css) : '') || url + "/skins/" + s.skin + "/ui.css");
+		},
 
-			case "strike":
-				tinyMCE.switchClassSticky(editor_id + '_strikethrough', 'mceButtonSelected');
-			break;
-			
-			case "ul":
-				tinyMCE.switchClassSticky(editor_id + '_bullist', 'mceButtonSelected');
-			break;
+		renderUI : function(o) {
+			var t = this, n = o.targetNode, ic, tb, ed = t.editor, cf = ed.controlManager, sc;
 
-			case "ol":
-				tinyMCE.switchClassSticky(editor_id + '_numlist', 'mceButtonSelected');
-			break;
+			n = DOM.insertAfter(DOM.create('span', {id : ed.id + '_container', 'class' : 'mceEditor ' + ed.settings.skin + 'SimpleSkin'}), n);
+			n = sc = DOM.add(n, 'table', {cellPadding : 0, cellSpacing : 0, 'class' : 'mceLayout'});
+			n = tb = DOM.add(n, 'tbody');
+
+			// Create iframe container
+			n = DOM.add(tb, 'tr');
+			n = ic = DOM.add(DOM.add(n, 'td'), 'div', {'class' : 'mceIframeContainer'});
+
+			// Create toolbar container
+			n = DOM.add(DOM.add(tb, 'tr', {'class' : 'last'}), 'td', {'class' : 'mceToolbar mceLast', align : 'center'});
+
+			// Create toolbar
+			tb = t.toolbar = cf.createToolbar("tools1");
+			tb.add(cf.createButton('bold', {title : 'simple.bold_desc', cmd : 'Bold'}));
+			tb.add(cf.createButton('italic', {title : 'simple.italic_desc', cmd : 'Italic'}));
+			tb.add(cf.createButton('underline', {title : 'simple.underline_desc', cmd : 'Underline'}));
+			tb.add(cf.createButton('strikethrough', {title : 'simple.striketrough_desc', cmd : 'Strikethrough'}));
+			tb.add(cf.createSeparator());
+			tb.add(cf.createButton('undo', {title : 'simple.undo_desc', cmd : 'Undo'}));
+			tb.add(cf.createButton('redo', {title : 'simple.redo_desc', cmd : 'Redo'}));
+			tb.add(cf.createSeparator());
+			tb.add(cf.createButton('cleanup', {title : 'simple.cleanup_desc', cmd : 'mceCleanup'}));
+			tb.add(cf.createSeparator());
+			tb.add(cf.createButton('insertunorderedlist', {title : 'simple.bullist_desc', cmd : 'InsertUnorderedList'}));
+			tb.add(cf.createButton('insertorderedlist', {title : 'simple.numlist_desc', cmd : 'InsertOrderedList'}));
+			tb.renderTo(n);
+
+			return {
+				iframeContainer : ic,
+				editorContainer : ed.id + '_container',
+				sizeContainer : sc,
+				deltaHeight : -20
+			};
+		},
+
+		getInfo : function() {
+			return {
+				longname : 'Simple theme',
+				author : 'Moxiecode Systems AB',
+				authorurl : 'http://tinymce.moxiecode.com',
+				version : tinymce.majorVersion + "." + tinymce.minorVersion
+			}
 		}
-	} while ((node = node.parentNode));
-}
+	});
+
+	tinymce.ThemeManager.add('simple', tinymce.themes.SimpleTheme);
+})();

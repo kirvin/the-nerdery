@@ -603,10 +603,13 @@
 			for ($i=0; $i < (count($rfields)-1); $i++)
 				echo "'" . $rfields[$i][1] . "',";
 			echo "'" . $rfields[count($rfields)-1][1] . "');";
-			echo "var file_fields = new Array (";
-			for ($i=0; $i < (count($ffields)-1); $i++)
-				echo "'" . $ffields[$i][0] . "',";
-			echo "'" . $ffields[count($ffields)-1][0] . "');";
+
+			if (count($ffields) > 0) {
+				echo "var file_fields = new Array ('" . join("','", $ffields) . "');";
+			}
+			else {
+				echo "var file_fields = new Array ();";
+			}
 
 			echo "function validate" . $fname . "(frm) {" .
 				 "	var valid = true;" .

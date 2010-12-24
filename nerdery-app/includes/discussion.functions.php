@@ -1,4 +1,6 @@
 <?php
+require_once ("nerdery/net.theirvins.nerdery.util.StringUtils.php");
+
 
 $MAX_PAGE_COMMENTS = 50;
 
@@ -269,7 +271,7 @@ function writeThread ($discussion, $tid, $application) {
 						for ($j=0; $j<$curr_comment->commentLevel; $j++)
 							echo "<img src=\"images/blank.gif\" width=\"10\">";
 		echo			"</td><td>" .
-							nl2br ($curr_comment->commentText) .
+							StringUtils::formatUserText ($curr_comment->commentText) .
 						"</td></tr></table>" .
 				"</td>" .
 			 "</tr>";

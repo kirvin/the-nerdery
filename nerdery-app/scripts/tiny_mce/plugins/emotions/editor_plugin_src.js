@@ -1,36 +1,43 @@
-/* Import plugin specific language pack */
-tinyMCE.importPluginLanguagePack('emotions', 'en,sv,zh_cn,cs,fa,fr_ca,fr,de,pl,pt_br');
-
 /**
- * Returns the HTML contents of the emotions control.
+ * editor_plugin_src.js
+ *
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
  */
-function TinyMCE_emotions_getControlHTML(control_name) {
-	switch (control_name) {
-		case "emotions":
-			return '<img id="{$editor_id}_emotions" src="{$pluginurl}/images/emotions.gif" title="{$lang_emotions_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mceEmotion\');">';
-	}
 
-	return "";
-}
+(function(tinymce) {
+	tinymce.create('tinymce.plugins.EmotionsPlugin', {
+		init : function(ed, url) {
+			// Register commands
+			ed.addCommand('mceEmotion', function() {
+				ed.windowManager.open({
+					file : url + '/emotions.htm',
+					width : 250 + parseInt(ed.getLang('emotions.delta_width', 0)),
+					height : 160 + parseInt(ed.getLang('emotions.delta_height', 0)),
+					inline : 1
+				}, {
+					plugin_url : url
+				});
+			});
 
-/**
- * Executes the mceEmotion command.
- */
-function TinyMCE_emotions_execCommand(editor_id, element, command, user_interface, value) {
-	// Handle commands
-	switch (command) {
-		case "mceEmotion":
-			var template = new Array();
+			// Register buttons
+			ed.addButton('emotions', {title : 'emotions.emotions_desc', cmd : 'mceEmotion'});
+		},
 
-			template['file'] = '../../plugins/emotions/emotions.htm'; // Relative to theme
-			template['width'] = 150;
-			template['height'] = 180;
+		getInfo : function() {
+			return {
+				longname : 'Emotions',
+				author : 'Moxiecode Systems AB',
+				authorurl : 'http://tinymce.moxiecode.com',
+				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/emotions',
+				version : tinymce.majorVersion + "." + tinymce.minorVersion
+			};
+		}
+	});
 
-			tinyMCE.openWindow(template, {editor_id : editor_id});
-
-			return true;
-	}
-
-	// Pass to next handler in chain
-	return false;
-}
+	// Register plugin
+	tinymce.PluginManager.add('emotions', tinymce.plugins.EmotionsPlugin);
+})(tinymce);

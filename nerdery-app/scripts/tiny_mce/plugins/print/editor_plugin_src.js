@@ -1,26 +1,34 @@
-/* Import theme	specific language pack */
-tinyMCE.importPluginLanguagePack('print', 'en,sv,zh_cn,fa,fr_ca,fr,de,pl,pt_br,cs');
-
-function TinyMCE_print_getControlHTML(control_name)	{
-	switch (control_name) {
-		case "print":
-			return '<img id="{$editor_id}_print" src="{$pluginurl}/images/print.gif" title="{$lang_print_desc}" width="20" height="20" class="mceButtonNormal" onmouseover="tinyMCE.switchClass(this,\'mceButtonOver\');" onmouseout="tinyMCE.restoreClass(this);" onmousedown="tinyMCE.restoreAndSwitchClass(this,\'mceButtonDown\');" onclick="tinyMCE.execInstanceCommand(\'{$editor_id}\',\'mcePrint\',true);" />';
-	}
-
-	return "";
-}
-
 /**
- * Executes	the	search/replace commands.
+ * editor_plugin_src.js
+ *
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
  */
-function TinyMCE_print_execCommand(editor_id, element, command,	user_interface,	value) {
-	// Handle commands
-	switch (command) {
-		case "mcePrint":
-			tinyMCE.getInstanceById(editor_id).contentWindow.print();
-			return true;
-	}
 
-	// Pass to next handler in chain
-	return false;
-}
+(function() {
+	tinymce.create('tinymce.plugins.Print', {
+		init : function(ed, url) {
+			ed.addCommand('mcePrint', function() {
+				ed.getWin().print();
+			});
+
+			ed.addButton('print', {title : 'print.print_desc', cmd : 'mcePrint'});
+		},
+
+		getInfo : function() {
+			return {
+				longname : 'Print',
+				author : 'Moxiecode Systems AB',
+				authorurl : 'http://tinymce.moxiecode.com',
+				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/print',
+				version : tinymce.majorVersion + "." + tinymce.minorVersion
+			};
+		}
+	});
+
+	// Register plugin
+	tinymce.PluginManager.add('print', tinymce.plugins.Print);
+})();

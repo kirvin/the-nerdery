@@ -1,61 +1,50 @@
-/* Import plugin specific language pack */
-tinyMCE.importPluginLanguagePack('advimage', 'en,de,sv,zh_cn,cs,fa,fr_ca,fr,pl,pt_br');
-
 /**
- * Insert image template function.
+ * editor_plugin_src.js
+ *
+ * Copyright 2009, Moxiecode Systems AB
+ * Released under LGPL License.
+ *
+ * License: http://tinymce.moxiecode.com/license
+ * Contributing: http://tinymce.moxiecode.com/contributing
  */
-function TinyMCE_advimage_getInsertImageTemplate() {
-    var template = new Array();
 
-    template['file']   = '../../plugins/advimage/image.htm';
-    template['width']  = 430;
-    template['height'] = 380; 
+(function() {
+	tinymce.create('tinymce.plugins.AdvancedImagePlugin', {
+		init : function(ed, url) {
+			// Register commands
+			ed.addCommand('mceAdvImage', function() {
+				// Internal image object like a flash placeholder
+				if (ed.dom.getAttrib(ed.selection.getNode(), 'class').indexOf('mceItem') != -1)
+					return;
 
-    // Language specific width and height addons
-    template['width']  += tinyMCE.getLang('lang_insert_image_delta_width', 0);
-    template['height'] += tinyMCE.getLang('lang_insert_image_delta_height', 0);
+				ed.windowManager.open({
+					file : url + '/image.htm',
+					width : 480 + parseInt(ed.getLang('advimage.delta_width', 0)),
+					height : 385 + parseInt(ed.getLang('advimage.delta_height', 0)),
+					inline : 1
+				}, {
+					plugin_url : url
+				});
+			});
 
-    return template;
-}
+			// Register buttons
+			ed.addButton('image', {
+				title : 'advimage.image_desc',
+				cmd : 'mceAdvImage'
+			});
+		},
 
-function TinyMCE_advimage_cleanup(type, content) {
-	switch (type) {
-		case "insert_to_editor_dom":
-			var imgs = content.getElementsByTagName("img");
-			for (var i=0; i<imgs.length; i++) {
-				var onmouseover = tinyMCE.cleanupEventStr(tinyMCE.getAttrib(imgs[i], 'onmouseover'));
-				var onmouseout = tinyMCE.cleanupEventStr(tinyMCE.getAttrib(imgs[i], 'onmouseout'));
+		getInfo : function() {
+			return {
+				longname : 'Advanced image',
+				author : 'Moxiecode Systems AB',
+				authorurl : 'http://tinymce.moxiecode.com',
+				infourl : 'http://wiki.moxiecode.com/index.php/TinyMCE:Plugins/advimage',
+				version : tinymce.majorVersion + "." + tinymce.minorVersion
+			};
+		}
+	});
 
-				if ((src = tinyMCE.getImageSrc(onmouseover)) != "") {
-					src = tinyMCE.convertRelativeToAbsoluteURL(tinyMCE.settings['base_href'], src);
-					imgs[i].setAttribute('onmouseover', "this.src='" + src + "';");
-				}
-
-				if ((src = tinyMCE.getImageSrc(onmouseout)) != "") {
-					src = tinyMCE.convertRelativeToAbsoluteURL(tinyMCE.settings['base_href'], src);
-					imgs[i].setAttribute('onmouseout', "this.src='" + src + "';");
-				}
-			}
-			break;
-
-		case "get_from_editor_dom":
-			var imgs = content.getElementsByTagName("img");
-			for (var i=0; i<imgs.length; i++) {
-				var onmouseover = tinyMCE.cleanupEventStr(tinyMCE.getAttrib(imgs[i], 'onmouseover'));
-				var onmouseout = tinyMCE.cleanupEventStr(tinyMCE.getAttrib(imgs[i], 'onmouseout'));
-
-				if ((src = tinyMCE.getImageSrc(onmouseover)) != "") {
-					src = eval(tinyMCE.settings['urlconverter_callback'] + "(src, null, true);");
-					imgs[i].setAttribute('onmouseover', "this.src='" + src + "';");
-				}
-
-				if ((src = tinyMCE.getImageSrc(onmouseout)) != "") {
-					src = eval(tinyMCE.settings['urlconverter_callback'] + "(src, null, true);");
-					imgs[i].setAttribute('onmouseout', "this.src='" + src + "';");
-				}
-			}
-			break;
-	}
-
-	return content;
-}
+	// Register plugin
+	tinymce.PluginManager.add('advimage', tinymce.plugins.AdvancedImagePlugin);
+})();

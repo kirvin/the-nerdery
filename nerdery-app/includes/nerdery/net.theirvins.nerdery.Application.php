@@ -18,7 +18,6 @@ class Application {
 	 */
 	private function __construct () {
 		$conn = MySQLUtil::getConnection();
-		mysql_select_db(Properties::getInstance()->getProperty("db.name"));
 		$rs = mysql_query("SELECT * FROM ApplicationState") or die ("Error while initializing Application: " . mysql_error());
 		if (mysql_affected_rows() > 0) {
 			$row = mysql_fetch_assoc($rs);

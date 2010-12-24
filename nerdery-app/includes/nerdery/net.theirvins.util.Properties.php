@@ -6,7 +6,7 @@
  */
 class Properties {
 
-	public static $DEFAULT_FILE = "http://nerdery.webhop.org/nerdery.properties";
+	//public static $DEFAULT_FILE = "http://nerdery.webhop.org/nerdery.properties";
 	private $props = array();
 	private static $instance = null;
 
@@ -37,7 +37,8 @@ class Properties {
 	function loadFromFile () {
 		//if ($file == null)
 		//	$file = Properties::$DEFAULT_FILE;
-		$temp = $this->loadFileFromURL (Properties::$DEFAULT_FILE);
+		//$temp = $this->loadFileFromURL (Properties::$DEFAULT_FILE);
+		$temp = $this->loadFileFromURL ($this->getDefaultUrl());
 		if (!$temp) {
 			//printf ("could not load file...");
 		}
@@ -52,6 +53,13 @@ class Properties {
 			}
 		}
 		//print_r ($this->props);
+	}
+
+	/**
+	 * 
+	 */
+	function getDefaultUrl () {
+		return "http://" . $_SERVER["SERVER_NAME"] . "/nerdery.properties";
 	}
 
 	/**
