@@ -88,7 +88,7 @@ require ('includes/list.functions.php');
 		<td></td>
 		<td align="center">
 			<?php
-				WriteListItem ($item_id, $LIST_ITEMS_DIR, $application);
+				WriteListItem ($item_id, getListItemsDir(), $application);
 			?>
 		</td>
 		<td></td>

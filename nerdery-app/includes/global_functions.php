@@ -2,11 +2,14 @@
 require_once ("nerdery/net.theirvins.nerdery.Application.php");
 
 	$COOKIE_LIFETIME = 1800;
-	$TEMP_DIR = "./misc/temp/";
 	$IMAGES_DIR = "../images/gallery/";
 	$SPOTLIGHT_DIR = "../images/spotlight/";
-	$LIST_ITEMS_DIR = "http://nerderydev.theirvins.net/misc/listitems/";
-	$JOURNALENTRIES_DIR = "./misc/journalentries/";
+
+	$TEMP_DIR = "./misc/temp/";
+	$UPLOADS_DIR = "/opt/www/uploads/nerdery";
+	$JOURNALENTRIES_DIR = $UPLOADS_DIR . "/journalentries";
+	$LIST_ITEMS_DIR = $UPLOADS_DIR . "/listitems/";
+
 	$IMAGE_WIDTH = 550;
 	$THUMB_WIDTH = 80;
 	$SPOTLIGHT_WIDTH = 200;
@@ -219,6 +222,33 @@ require_once ("nerdery/net.theirvins.nerdery.Application.php");
 			return str_replace ($target, "<span class=\"highlightedText\">" . $target . "</span>", $src);
 	}
 
+	/****************************************************************
+	 * 
+	 * Properties functions
+	 * 
+	 ****************************************************************/
+	function getTempDir () {
+		return getProperty("temp.dir", $TEMP_DIR);
+	}
+	function getUploadsDir () {
+		return getProperty("uploads.dir", $UPLOADS_DIR);
+	}
+	function getJournalItemsDir () {
+		return "/uploads/journalentries";
+	}
+	function getJournalItemsUploadDir () {
+		return getUploadsDir() . "/journalentries";
+	}
+	function getListItemsDir () {
+		return "/uploads/listitems";
+	}
+	function getListItemsUploadDir () {
+		return getUploadsDir() . "/listitems";
+	}
+	function getProperty ($propKey, $default) {
+		return is_null(Properties::getInstance()->getProperty($propKey)) ? $default : Properties::getInstance()->getProperty($propKey);
+	}
+
 	//-------------------------------------------------------------------------
 	// Date and time functions
 	//-------------------------------------------------------------------------
@@ -289,4 +319,6 @@ require_once ("nerdery/net.theirvins.nerdery.Application.php");
 		$page_action = $_GET["paction"];
 	else
 		$page_action = "";
+
+		
 ?>

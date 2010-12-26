@@ -97,7 +97,7 @@ if (strcmp($_SERVER["PHP_SELF"], '/login.php') != 0) {
 		<td></td>
 		<td align="center">
 		<?php
-			writeNewsItem ($item_id, $JOURNALENTRIES_DIR);
+			writeNewsItem ($item_id, getJournalItemsDir());
 		?>
 		</td>
 		<td></td>

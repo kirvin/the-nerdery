@@ -5,7 +5,15 @@
  *
  */
 class VotingList {
-	var $listID;	var $listTitle;	var $listDescription;	var $listOwner;	var $createdDate;	var $listItems;	var $itemCount;	var $isPublic;	var $lastModified;
+	var $listID;
+	var $listTitle;
+	var $listDescription;
+	var $listOwner;
+	var $createdDate;
+	var $listItems;
+	var $itemCount;
+	var $isPublic;
+	var $lastModified;
 
 	/**
 	 * 
@@ -13,8 +21,27 @@ class VotingList {
 	 * @param unknown_type $list_id
 	 * @return VotingList
 	 */
-	function VotingList ($list_id) {		$exists = false;		$sql = "SELECT * FROM Lists WHERE ListID=" . $list_id;		$rs = mysql_query ($sql);		if (mysql_num_rows ($rs) > 0) {			$row = mysql_fetch_array ($rs);			$this->listID = $row["ListID"];			$this->listTitle = $row["ListTitle"];			$this->listDescription = $row["ListDescription"];			$this->listOwner = $row["ListOwner"];			$this->listCreationDate = $row["CreatedDate"];			$this->isPublic = $rs["IsPublic"];			$this->lastModified = $rs["LastModified"];			$this->listItems = getListItems ($this->listID, $this->isPublic);			$this->itemCount = count($this->listItems);			$exists = true;		}
-		return $exists;	}}
+	function VotingList ($list_id) {
+		$exists = false;
+		$sql = "SELECT * FROM Lists WHERE ListID=" . $list_id;
+		$rs = mysql_query ($sql);
+		if (mysql_num_rows ($rs) > 0) {
+			$row = mysql_fetch_array ($rs);
+			$this->listID = $row["ListID"];
+			$this->listTitle = $row["ListTitle"];
+			$this->listDescription = $row["ListDescription"];
+			$this->listOwner = $row["ListOwner"];
+			$this->listCreationDate = $row["CreatedDate"];
+			$this->isPublic = $rs["IsPublic"];
+			$this->lastModified = $rs["LastModified"];
+			$this->listItems = getListItems ($this->listID, $this->isPublic);
+			$this->itemCount = count($this->listItems);
+			$exists = true;
+		}
+		return $exists;
+	}
+}
+
 /**
  * Retrieves the items in a Nerdery List
  *
@@ -43,7 +70,11 @@ function getListItems ($lid, $ip) {
 	return $answer;
 }
 
-
+/**
+ * 
+ * @author drteeth
+ *
+ */
 class ListItem {
 	var $ListItemID;
 	var $ListItemText;
@@ -65,6 +96,10 @@ class ListItem {
 	}
 }
 
+/**
+ * 
+ *
+ */
 function writeLists ($f_date) {
 	if ($f_date == 1) {
 		$date = mktime (0,0,0,date("m"),date("d")-14,date("Y"));
@@ -103,24 +138,69 @@ function writeLists ($f_date) {
  *
  * @param unknown_type $target_list
  */
-function writeListItems ($target_list) {	echo "<table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\">";	$curr_class = "evenCell";
+function writeListItems ($target_list) {
+	echo "<table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\">";
+	$curr_class = "evenCell";
 	for ($i=0; $i<count($target_list->listItems); $i++) {		$curr_class = (($curr_class == "oddCell") ? "evenCell" : "oddCell");		echo "<tr><td valign=\"top\" width=\"25%\" class=\"" . $curr_class . "\" align=\"right\">";			if ($target_list->listItems[$i]->LastModified > $_SESSION["PrevVisit"]) {				$aclass = "boldGreenLink";				echo "<img src=\"images/yellow_bullet.gif\">";			}			else {				$aclass = "boldBlueLink";				echo "<img src=\"images/green_bullet.gif\">";			}			echo "</td>" .					 "<td class=\"" . $curr_class . "\">" .						"<a class=\"$aclass\" href=\"view_list_item.php?l=" . $target_list->listID . "&i=" . 							$target_list->listItems[$i]->ListItemID . "\">" . 							$target_list->listItems[$i]->ListItemText . "</a>" .			"</td>" .			"<td class=\"$curr_class\" align=\"right\" valign=\"top\">" .				$target_list->listItems[$i]->OwnerName .			"</td>" .		 "</tr>";	}
-	echo "</table>";}
+	echo "</table>";
+}
+
+
 /**
  * Writes out the details and comments of a list item
  *
  * @param unknown_type $item_id
  * @param unknown_type $lid
  */
-function writeListItem ($item_id, $lid, &$application) {	$sql = "SELECT I.*, U.* FROM ListItems AS I, Users AS U WHERE U.UserID=I.ListItemOwner AND " .		"ListItemID=$item_id";	$rs = mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql . "<br>");	$row = mysql_fetch_array ($rs);
-	echo "<table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\">" .				"<tr>" .					"<td width=\"90\" rowspan=\"2\" class=\"oddCell\" align=\"center\" valign=\"top\">" .						"<img src=\"/images/signatures/" . $row["ListItemOwner"] . ".sig\">" .						"<br><span class=\"smallBlueText\">" .						date ("m/d/Y h:i a", strtotime ($row["CreatedDate"])) .						"</span>";
+function writeListItem ($item_id, $lid, &$application) {	
+	$sql = "SELECT I.*, U.* FROM ListItems AS I, Users AS U WHERE U.UserID=I.ListItemOwner AND " .
+			"ListItemID=$item_id";	
+	$rs = mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql . "<br>");	
+	$row = mysql_fetch_array ($rs);
+	echo "<table border=\"0\" cellpadding=\"3\" cellspacing=\"0\" width=\"100%\">" .
+					"<tr>" .
+						"<td width=\"90\" rowspan=\"2\" class=\"oddCell\" align=\"center\" valign=\"top\">" .
+							"<img src=\"/images/signatures/" . $row["ListItemOwner"] . ".sig\">" .
+							"<br><span class=\"smallBlueText\">" .
+								date ("m/d/Y h:i a", strtotime ($row["CreatedDate"])) .
+							"</span>";
 	if ($application->getTopTimeWaster() == $row["ListItemOwner"]) {
 		echo			"<div align=\"center\"><img src=\"images/top_waster.gif\"></div>	";
 	}
-	echo					"</td>" .					"<td class=\"oddCell\">" .$row["ListItemText"] . "</td>" .				 "</tr>";	//echo "<tr><td>";	//print_r ($row);	//echo "</td></tr>";
-	if ($row["ListItemFile"] !== "") {		echo "<tr>" .				 	"<td class=\"oddCell\">";		$ftype = $row["ListItemFile"];		$ftype = strtoupper ($ftype);		if ($ftype == "JPG" || $ftype == "JPEG" || $ftype == "GIF" || $ftype == "BMP") {			echo	"<img width=\"500\" src=\"/misc/listitems/" . $row["ListID"] . "/" . $row["ListItemID"] . "." . 							$row["ListItemFile"] . "\">";		}		else {			echo 	"<a class=\"blueLink\" href=\"/misc/listitems/" . $row["ListID"] . "/" . $row["ListItemID"] . "." . 							$row["ListItemFile"] . "\">" . $row["ListItemText"] . "</a>";		}					"</td>" .			 "</tr>";	}
-	else if ($row["ListItemURL"] !== "") {		echo 	"<tr>" .						"<td class=\"oddCell\">" .							"<a target=\"_blank\" class=\"blueLink\" href=\"" . $row["ListItemURL"] . "\">" . 								$row["ListItemText"] . 							"</a>" .						"</td>" .					"</tr>";	}
-	echo "</table>";}
+	echo
+						"</td>" .
+						"<td class=\"oddCell\">" .
+							$row["ListItemText"] . 
+						"</td>" .
+					 "</tr>";
+	//echo "<tr><td>";	//print_r ($row);	//echo "</td></tr>";
+	if ($row["ListItemFile"] !== "") {
+		echo "<tr>" .
+				 	"<td class=\"oddCell\">";
+		$ftype = $row["ListItemFile"];
+		$ftype = strtoupper ($ftype);
+		if ($ftype == "JPG" || $ftype == "JPEG" || $ftype == "GIF" || $ftype == "BMP") {
+			echo	"<img width=\"500\" src=\"" . getListItemsDir() . "/" . $row["ListID"] . "/" . $row["ListItemID"] . "." .
+ 						$row["ListItemFile"] . "\">";		
+		}
+		else {
+			echo 	"<a class=\"blueLink\" href=\"/misc/listitems/" . $row["ListID"] . "/" . $row["ListItemID"] . "." .
+						$row["ListItemFile"] . "\">" . $row["ListItemText"] . "</a>";		
+		}					
+		"</td>" .
+			 "</tr>";	
+	}
+	else if ($row["ListItemURL"] !== "") {
+		echo 	"<tr>" .
+					"<td class=\"oddCell\">" .
+						"<a target=\"_blank\" class=\"blueLink\" href=\"" . $row["ListItemURL"] . "\">" .
+ 							$row["ListItemText"] .
+ 						"</a>" .
+					"</td>" .
+				"</tr>";
+	}
+	echo "</table>";
+}
 
 
 //------------------------------------------------------------------------

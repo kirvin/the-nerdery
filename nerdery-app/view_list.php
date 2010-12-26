@@ -22,12 +22,14 @@ $application = &Application::getInstance();
  * Check for login
  */
 if (strcmp($_SERVER["PHP_SELF"], '/login.php') != 0) {
-	if ($_SESSION["ValidLogin"] != 1)
+	if ($_SESSION["ValidLogin"] != 1) {
 		header ("location: login.php?r=" . $_SERVER["PHP_SELF"]);
+	}
 }
 
+require_once ("includes/nerdery/net.theirvins.nerdery.util.FileManager.php");
 require_once ('includes/class.dropshadow.php');
-	require_once ('includes/list.functions.php');
+require_once ('includes/list.functions.php');
 
 	if (isset ($_POST["list_id"]))
 		$list_id = $_POST["list_id"];
@@ -37,29 +39,8 @@ require_once ('includes/class.dropshadow.php');
 		header ("location: lists.php");
 
 	if ($page_action == "insertListItem") {
-		/*
-		$sql = "SELECT COUNT(ListItemID) AS ItemCount FROM ListItems WHERE ListID=" . $list_id;
-		$rs = mysql_query ($sql);
-		$row = mysql_fetch_array ($rs);
-		$new_cnt = $row[0];
-		*/
-		//echo ("type: " . $_FILES["item_file"]["type"]);
-		if ($_FILES["item_file"]["type"] == "audio/mpeg")
-			$extension = "mp3";
-		else if ($_FILES["item_file"]["type"] == "image/pjpeg")
-			$extension = "jpg";
-		else if ($_FILES["item_file"]["type"] == "image/jpeg")
-			$extension = "jpg";
-		else if ($_FILES["item_file"]["type"] == "image/jpg")
-			$extension = "jpg";
-		else if ($_FILES["item_file"]["type"] == "application/x-shockwave-flash")
-			$extension = "swf";
-		else if ($_FILES["item_file"]["type"] == "video/avi")
-			$extension = "avi";
-		else if ($_FILES["item_file"]["type"] == "video/mpeg")
-			$extension = "mpeg";
-		else
-			$extension = "";
+		$extension = FileManager::getExtensionForMimeType($_FILES, "item_file");
+
 		$sql = "INSERT INTO ListItems (ListID, ListItemOwner, CreatedDate, LastModified, ListItemFile, ListItemText, ListItemURL) " .
 			"VALUES (" . $list_id . ",'" . $_SESSION["UserID"] . "','" . date ("Y-m-d H:i:s") . "','" . date ("Y-m-d H:i:s") . 
 			"','" . $extension . "','" . $_POST["item_text"] . "','" . $_POST["item_url"] . "')";
@@ -69,26 +50,33 @@ require_once ('includes/class.dropshadow.php');
 
 
 		// upload file if necessary
-		if ($_FILES["item_file"]["name"]) {
-			$upload_path = realpath (".") . "/misc/listitems/" . $list_id;
-			if (!file_exists ($upload_path))
-				mkdir ($upload_path);
-			$upload_path = $upload_path . "/" . $new_cnt . "." . $extension;
-			$file = $upload_path;// . $new_cnt . "." . $extension;
-			move_uploaded_file ($_FILES["item_file"]["tmp_name"], $upload_path);
-			if ($extension == "jpg" || $extension == "bmp") {
-				$ds = new dropShadow ();
-				// resize to 800 px wide IF this is a horizontal image (width > height)
-				$ds->loadImage ($file);
-				if (ImageSX($ds->_imgOrig) > ImageSY ($ds->_imgOrig))
-					$ds->resizeToSize (800, 0);
-				else if (ImageSX($ds->_imgOrig) > 800)
-					$ds->resizeToSize (800, 0);
-				$ds->saveFinal ($file);
-			}
+		$upload_path = getListItemsUploadDir() . "/" . $list_id;
+		$file_name = $new_cnt;
+		if (FileManager::saveFile($_FILES, "item_file", $upload_path, $file_name)) {
+			// FIXME this isn't needed (?)
 			$sql = "UPDATE ListItems SET ListItemFile='" . $extension . "' WHERE ListItemID=" . $new_cnt;
 			mysql_query ($sql); 
 		}
+//		if ($_FILES["item_file"]["name"]) {
+//			$upload_path = getListItemsUploadDir() . "/" . $list_id;
+//			if (!file_exists ($upload_path))
+//				mkdir ($upload_path);
+//			$upload_path = $upload_path . "/" . $new_cnt . "." . $extension;
+//			$file = $upload_path;// . $new_cnt . "." . $extension;
+//			$result = move_uploaded_file ($_FILES["item_file"]["tmp_name"], $upload_path);
+//			if ($extension == "jpg" || $extension == "bmp") {
+//				$ds = new dropShadow ();
+//				// resize to 800 px wide IF this is a horizontal image (width > height)
+//				$ds->loadImage ($file);
+//				if (ImageSX($ds->_imgOrig) > ImageSY ($ds->_imgOrig))
+//					$ds->resizeToSize (800, 0);
+//				else if (ImageSX($ds->_imgOrig) > 800)
+//					$ds->resizeToSize (800, 0);
+//				$ds->saveFinal ($file);
+//			}
+//			$sql = "UPDATE ListItems SET ListItemFile='" . $extension . "' WHERE ListItemID=" . $new_cnt;
+//			mysql_query ($sql); 
+//		}
 		$sql = "UPDATE Lists SET LastModified='" . date ("Y-m-d H:i:s") . "' WHERE ListID=" . $list_id;
 		mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql);
 
