@@ -24,7 +24,7 @@ class FileManager {
 			if (self::isResizableImageType($extension)) {
 				$ds = new dropShadow ();
 				// resize to 800 px wide IF this is a horizontal image (width > height)
-				$ds->loadImage ($file);
+				$ds->loadImage ($finalFile);
 				if (ImageSX($ds->_imgOrig) > ImageSY ($ds->_imgOrig))
 					$ds->resizeToSize (800, 0);
 				else if (ImageSX($ds->_imgOrig) > 800)
