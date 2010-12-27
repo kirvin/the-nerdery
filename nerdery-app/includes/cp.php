@@ -10,6 +10,10 @@ function writeCP () {
 		/*clear:right;*/
 	}
 	
+	#control_panel {
+		display: none;
+	}
+	
 	#control_panel.yui-panel .hd {
 		border-color:#308259;
 		border-style:solid;
@@ -128,6 +132,10 @@ function writeCP () {
 
 		// Render the Dialog
 		YAHOO.theirvins.nerdery.coolBar.render();
+
+		// now that we've turned the div into a dialog, we can make it display
+		// this is done after the dialog conversion to avoid a ui "flicker"
+		document.getElementById("control_panel").style.display = "block";
 
 		YAHOO.util.Event.addListener(
 			"showCoolBar", 

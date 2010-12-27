@@ -83,7 +83,7 @@ writeCP ();
 		<?php
 			//echo "LAST: " . $_SESSION["PrevVisit"];
 			$count = 0;
-			$rss = fetch_rss("http://nerdery.theirvins.net/nerdery_rss.php");
+			$rss = fetch_rss("http://" . $_SERVER["SERVER_NAME"] . "/nerdery_rss.php");
 			foreach ($rss->items as $item) {
 				if ($count < 10 || strtotime($item["pubdate"]) >= strtotime($_SESSION["PrevVisit"])) {
 					echo "<li id=\"newsItem\"><span class=\"newsItemDate\">" . date("D, m/d/Y h:i", strtotime($item["pubdate"])) . 
