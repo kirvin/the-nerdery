@@ -9,18 +9,18 @@ function writeCP () {
 		/*width:45%;*/
 		/*clear:right;*/
 	}
-	
+
 	#control_panel {
 		display: none;
 	}
-	
+
 	#control_panel.yui-panel .hd {
 		border-color:#308259;
 		border-style:solid;
 		border-width:0pt 1px;
 		margin:0pt -1px;
 		border-bottom:1px solid #CCCCCC;
-		background:transparent url(../../../../assets/skins/sam/sprite.png) repeat-x scroll 0pt -200px;
+		background:transparent url(includes/yahoo/assets/skins/sam/sprite.png) repeat-x scroll 0pt -200px;
 		background-color: #89A798;
 		color:#FFFFFF;
 		font-size:93%;
@@ -41,8 +41,7 @@ function writeCP () {
 
 </style>
 
-<link rel="stylesheet" type="text/css" href="../../assets/yui.css" >
-<link rel="stylesheet" type="text/css" href="../../build/button/assets/skins/sam/button.css" />
+<link rel="stylesheet" type="text/css" href="includes/yahoo/assets/skins/sam/button.css" />
 <link rel="stylesheet" type="text/css" href="includes/yahoo/container/assets/skins/sam/container.css" />
 <script type="text/javascript" src="includes/yahoo/yahoo/yahoo-min.js"></script>
 <script type="text/javascript" src="includes/yahoo/event/event-min.js"></script>
@@ -59,7 +58,7 @@ function writeCP () {
 	YAHOO.namespace("theirvins.nerdery");
 
 	function init() {
-		
+
 		// Define various event handlers for Dialog
 		var handleSubmit = function() {
 			this.submit();
@@ -80,17 +79,17 @@ function writeCP () {
 
 		// Instantiate the Dialog
 		YAHOO.theirvins.nerdery.coolBar = new YAHOO.widget.Dialog(
-			"control_panel", 
+			"control_panel",
 			{
 				width : "500px",
 				fixedcenter : true,
-				visible : false, 
+				visible : false,
 				constraintoviewport : true,
-				buttons : [ 
+				buttons : [
 					{ text:"Make It So", handler:handleSubmit },
-					{ text:"Cancel", handler:handleCancel } 
+					{ text:"Cancel", handler:handleCancel }
 				]
-			} 
+			}
 		);
 
 		/**
@@ -127,7 +126,7 @@ function writeCP () {
 		// Wire up the success and failure handlers
 		YAHOO.theirvins.nerdery.coolBar.callback = {
 			success: handleSuccess,
-			failure: handleFailure 
+			failure: handleFailure
 		};
 
 		// Render the Dialog
@@ -138,10 +137,10 @@ function writeCP () {
 		document.getElementById("control_panel").style.display = "block";
 
 		YAHOO.util.Event.addListener(
-			"showCoolBar", 
-			"click", 
+			"showCoolBar",
+			"click",
 			YAHOO.theirvins.nerdery.coolBar.show,
-			YAHOO.theirvins.nerdery.coolBar, 
+			YAHOO.theirvins.nerdery.coolBar,
 			true
 		);
 	}
@@ -161,14 +160,14 @@ function writeCP () {
 			<label for="plus_minus"></label>
 			<input type="radio" name="plus_minus" value="add">Give</input>
 			<input type="radio" name="plus_minus" value="subtract">Take away</input>
-			<!-- 
+			<!--
 			<select name="plus_minus">
 				<option value="-1">
 				<option value="add">Give
 				<option value="subtract">Take away
 			</select>
 			-->
-	
+
 			<select name="number_points">
 				<option value="-1">0</option>
 				<option value="1">1</option>
@@ -194,7 +193,7 @@ function writeCP () {
 
 			<label for="reasonFor">because</label>
 			<input type="text" name="reasonFor" size="30" value="">
-					
+
 		</form>
 		</div>
 	</div>

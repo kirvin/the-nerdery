@@ -290,10 +290,16 @@
 			for ($i=0; $i < (count($rfields)-1); $i++)
 				echo "'" . $rfields[$i][1] . "',";
 			echo "'" . $rfields[count($rfields)-1][1] . "');\n";
-			echo "var file_fields = new Array (";
-			for ($i=0; $i < (count($ffields)-1); $i++)
-				echo "'" . $ffields[$i][0] . "',";
-			echo "'" . $ffields[count($ffields)-1][0] . "');\n";
+			if (count($ffields) > 0) {
+				echo "var file_fields = new Array (";
+				for ($i=0; $i < (count($ffields)-1); $i++) {
+					echo "'" . $ffields[$i][0] . "',";
+				}
+				echo "'" . $ffields[count($ffields)-1][0] . "');\n";
+			}
+			else {
+				echo 'var file_fields = new Array();';
+			}
 
 			echo "function validate" . $this->formname . "(frmname) {\n" .
 				 "  var frm = document.forms[frmname];\n" .

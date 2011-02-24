@@ -1,24 +1,44 @@
 <?php
 
+	function displayError ($errorMessage) {
+		echo '
+		<script language="javascript" type="text/javascript">
+			var errorMessage = "' . $errorMessage . '";
+			$(document).ready(function () {
+				if (errorMessage != null) {
+					$("#errorDialog").dialog({
+						title: "Admire this sweet dialog!",
+						height: 140,
+						modal: true
+					}).html("<p>" + errorMessage + "</p>");
+				}
+			});
+		</script>
+		';
+	}
+
 	/**
-	 * 
+	 *
 	 *
 	 * @param unknown_type $tab
 	 * @param unknown_type $t
 	 * @param unknown_type $cbtitle
 	 */
 	function WriteHeader ($tab = 0, $t = "The Nerdery", $cbtitle = null) {
-		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">" .
-				 "<html>" .
-				 "<head>" .
-				 	"<title>$t</title>\n" .
-						"<link rel=\"stylesheet\" type=\"text/css\" href=\"/stylesheets/nerdery.css\">\n" .
-						"<script language=\"javascript\" type=\"text/javascript\" src=\"/scripts/voting.js\">\n" .
-						"</script>\n" .
-					"</head>\n" .
-					"<body class=\"yui-skin-sam\">\n" .
-						"<br>\n" .
-						"<div align=\"center\">\n";
+		echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+				 <head>
+				 <html>
+				 	<title>' . $t . '</title>
+						<script language="javascript" type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+						<script language="javascript" type="text/javascript" src="/static/jquery/js/jquery-ui-1.8.9.custom.min.js"></script>
+						<link rel="stylesheet" type="text/css" href="/static/jquery/css/sunny/jquery-ui-1.8.9.custom.css" />
+						<link rel="stylesheet" type="text/css" href="/stylesheets/nerdery.css">
+						<script language="javascript" type="text/javascript" src="/scripts/voting.js"></script>
+					</head>
+					<body class="yui-skin-sam">
+						<br>
+						<div align="center">
+		';
 		if ($_SESSION["ValidLogin"] == 1)
 			echo		"<map name=\"logomap\">" .
 							"<area shape=\"circle\" coords=\"55,65,50\" alt=\"Dr. Teeth's website\" href=\"http://drteeth.theirvins.net\">" .
@@ -80,7 +100,7 @@
 
 
 	/**
-	 * 
+	 *
 	 *
 	 */
 	function WriteFooter () {
@@ -112,18 +132,19 @@
 				echo $row["UserCount"] . " users currently logged in";
 			echo 				"</a>";
 		}
-		echo				"</span>" .
-							"&nbsp;<img src=\"/images/green_bullet.gif\">&nbsp;" .
-							"<a class=\"smallGreenLink\" href=\"/edit_user.php\">Change user info</a>" .
-							"<br><br>" .
-						"</td>" .
-					"</tr>" .
-				"</table>" .
-				"<br><br>" .
-			"</div>" .
-
-			"</body>" .
-			"</html>";
+		echo				'</span>
+							&nbsp;<img src="/images/green_bullet.gif">&nbsp;
+							<a class="smallGreenLink" href="/edit_user.php">Change user info</a>
+							<br><br>
+						</td>
+					</tr>
+				</table>
+				<br><br>
+			</div>
+			<div id="errorDialog"></div>
+			</body>
+			</html>
+		';
 	}
 
 
@@ -138,7 +159,7 @@
 			$this->cp = $cp;
 		}
 		function start () {
-			echo 
+			echo
 				'<table border="0" cellpadding="0" cellspacing="0" class="sectionHeaderTable">' .
 					'<tr>' .
 						'<td class="sectionHeaderEndCell" background="images/section.header.bg.gif"><img height="32" width="25" src="images/section.header.w.gif"></td>' .

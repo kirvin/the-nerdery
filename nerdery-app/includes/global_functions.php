@@ -1,5 +1,10 @@
 <?php
+ini_set("error_reporting", E_ALL);
+
+date_default_timezone_set('America/Los_Angeles');
+
 require_once ("nerdery/net.theirvins.nerdery.Application.php");
+require_once ("nerdery/net.theirvins.nerdery.domain.User.php");
 
 	$COOKIE_LIFETIME = 1800;
 	$IMAGES_DIR = "../images/gallery/";
@@ -14,7 +19,7 @@ require_once ("nerdery/net.theirvins.nerdery.Application.php");
 	$THUMB_WIDTH = 80;
 	$SPOTLIGHT_WIDTH = 200;
 	$SIGNATURE_WIDTH = 50;
-	
+
 	$MYSQL_DATE_FORMAT = "Y-m-d h:i:s";
 
 //	$db_server = "localhost";
@@ -25,39 +30,19 @@ require_once ("nerdery/net.theirvins.nerdery.Application.php");
 	$db_uid = "nerdery_db";
 	$db_pwd = "!AmTheNerdery";
 	$db_name = "nerdery";
-	
+
 
 	/**
-	 * Class definition for site user object 
+	 * Checks to make sure 1) the current page is not the login page or 2) the user
+	 * is logged in.  If not, then the request is redirected to the login page.
 	 */
-	class User {
-		var $userID = "";
-		var $displayName = "";
-		var $signatureFile = 0;
-		var $previousVisit = "";
-		var $userType = -1;
-		var $userTypeName = "";
-		var $coolPoints = 0;
-		var $totalTime = 0;
-
-		function User ($uid, $dn, $sf, $pv, $t, $tn, $cp, $tt) {
-			$this->userID = $uid;
-			$this->displayName = $dn;
-			$this->signatureFile = $sf;
-			$this->previousVisit = $pv;
-			$this->userType = $t;
-			$this->userTypeName = $tn;
-			$this->coolPoints = $cp;
-			$this->totalTime = $tt;
-		}
-		function save () {
-			$sql = "UPDATE Users SET DisplayName='$this->displayName', UserSignature=$this->signatureFile, " .
-				"PrevVisit='$this->previousVisit', UserTypeID=$this->userType, CoolPoints=$this->coolPoints, " .
-				"TotalTime=$this->totalTime WHERE UserID='$this->userID'";
-			mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql);
+	function checkSession () {
+		if (strcmp($_SERVER["PHP_SELF"], '/login.php') != 0) {
+			if ($_SESSION["ValidLogin"] != 1)
+				header ("location: login.php?r=" . $_SERVER["PHP_SELF"]);
 		}
 	}
-	
+
 
 	//-------------------------------------------------------------------------
 	// Functions for session handling
@@ -102,7 +87,7 @@ require_once ("nerdery/net.theirvins.nerdery.Application.php");
 			else {
 				$_SESSION["ValidLogin"] = 1;
 				$user = new User (
-					$row["UserID"], 
+					$row["UserID"],
 					$row["DisplayName"],
 					$row["UserSignature"],
 					date ("Y-m-d H:i:s", strtotime ($row["PrevVisit"])),
@@ -122,7 +107,7 @@ require_once ("nerdery/net.theirvins.nerdery.Application.php");
 			$_SESSION["ValidLogin"] = 0;
 
 		mysql_free_result($result);
-		
+
 		// clean up old sessions....
 		$rand = mt_rand(0, 100);
 		if ($rand > 50) {
@@ -173,7 +158,7 @@ require_once ("nerdery/net.theirvins.nerdery.Application.php");
 				}
 			}
 			else {
-				$sql = "INSERT INTO UserSessions (UserID, SessionTime, SessionStart, SessionID) VALUES ('" . $_SESSION["UserID"] . 
+				$sql = "INSERT INTO UserSessions (UserID, SessionTime, SessionStart, SessionID) VALUES ('" . $_SESSION["UserID"] .
 					"','" . date ("Y-m-d H:i:s") . "','" . date ("Y-m-d H:i:s") . "','" . $key . "')";
 				//echo $sql;
 				if (mysql_query ($sql) != 1) {
@@ -223,9 +208,9 @@ require_once ("nerdery/net.theirvins.nerdery.Application.php");
 	}
 
 	/****************************************************************
-	 * 
+	 *
 	 * Properties functions
-	 * 
+	 *
 	 ****************************************************************/
 	function getTempDir () {
 		return getProperty("temp.dir", $TEMP_DIR);
@@ -320,5 +305,5 @@ require_once ("nerdery/net.theirvins.nerdery.Application.php");
 	else
 		$page_action = "";
 
-		
+
 ?>

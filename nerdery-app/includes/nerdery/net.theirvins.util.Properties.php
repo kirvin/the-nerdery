@@ -1,8 +1,8 @@
 <?php
 /**
- * Provides an interface into a collection of properties, with 
+ * Provides an interface into a collection of properties, with
  * methods to read properties from a text file.
- * 
+ *
  */
 class Properties {
 
@@ -48,15 +48,17 @@ class Properties {
 			//print_r ($lines);
 			foreach ($lines as $line) {
 				$line = rtrim($line);
-				$p = split("=", $line);
-				$this->props[$p[0]] = $p[1];
+				$p = preg_split("/=/", $line);
+				if (sizeof($p) > 1) {
+					$this->props[$p[0]] = $p[1];
+				}
 			}
 		}
 		//print_r ($this->props);
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	function getDefaultUrl () {
 		return "http://" . $_SERVER["SERVER_NAME"] . "/nerdery.properties";

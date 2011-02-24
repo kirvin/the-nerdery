@@ -4,29 +4,23 @@ require_once ("includes/global_functions.php");
 require_once ('includes/cp.php');
 require_once ("includes/framework_functions.php");
 require_once ('includes/form_functions.php');
-ob_start();
+require_once("includes/nerdery/net.theirvins.nerdery.services.ListService.php");
 
-/*
- * Set up session handling
- */
-session_set_save_handler ("open_session", "close_session", "read_session", "write_session",
-	"destroy_session", "session_gc");
-session_start ();
+	ob_start();
 
-/*
- * get a reference to the application object
- */
-$application = &Application::getInstance();
+	// Set up session handling
+	session_set_save_handler ("open_session", "close_session", "read_session", "write_session",
+		"destroy_session", "session_gc");
+	session_start ();
 
-/*
- * Check for login
- */
-if (strcmp($_SERVER["PHP_SELF"], '/login.php') != 0) {
-	if ($_SESSION["ValidLogin"] != 1)
-		header ("location: login.php?r=" . $_SERVER["PHP_SELF"]);
-}
+	// get a reference to the application object
+	$application = &Application::getInstance();
 
-require_once ('includes/list.functions.php');
+	// get a reference to the list service
+	$listService = ListService::getInstance();
+
+	// Check for login
+	checkSession();
 
 	// set up vars for current list view
 	$filter_date = 1;
@@ -41,42 +35,33 @@ require_once ('includes/list.functions.php');
 	$ltitle_in = "";
 	$ldesc_in = "";
 	$ltype_in = 1;
-	
+
+	/*
+	 * Renders the HTML <head> and beginning of body
+	 */
+	WriteHeader (2, "Nerdery Lists");
+	writeCP ();
+
 	//---------------------------------------------------------------
-	// Insert list if requested in form data 
+	// Insert list if requested in form data
 	//---------------------------------------------------------------
 	if ($page_action == "insertList") {
-		$sql = "SELECT * FROM Lists WHERE ListOwner='" . $_SESSION["UserID"] . "' AND ListTitle='" . $_POST["list_title"] . "'";
-		$rs = mysql_query ($sql);
-		if (mysql_num_rows ($rs) > 0) {
+		if ($listService->listExists($_SESSION["UserID"], $_POST["list_title"])) {
 			$errMsg = "You have already created a list with that title.  Please change the title of your new list.";
 		}
 		else {
-			$now = getdate();
-			$sql = "INSERT INTO Lists (ListTitle, ListDescription, ListOwner, CreatedDate, LastModified, IsPublic) VALUES ('" .
-					$_POST["list_title"] . "','" . $_POST["list_description"] .
-					//"','" . $_SESSION["UserID"] . "','" . date("Y-m-d H:m:s") . "'," . $_POST["list_type"] . ")";
-					"','" . $_SESSION["UserID"] . "','" . date("Y-m-d H:m:s") . "','" . date("Y-m-d H:m:s") . "',1)";
-			mysql_query ($sql) or die ("[Insert List] Error updating database: " . mysql_error());
-			$newListId = mysql_insert_id();
-
-			// insert a record into the history table
-			$sql = "INSERT INTO NerderyEvents (EventTitle, EventDescription, UserID, EventTypeID, EventURL) " .
-				"VALUES ('New List: \"" . substr($_POST["list_title"], 0, 50) . "\"', '" . 
-				$_SESSION["user"]->displayName . " created a new list.', '" . $_SESSION["UserID"] . "', " .
-				"(SELECT EventTypeID FROM NerderyEventType WHERE EventTypeName='List'), '/view_list.php?l=" . 
-				$newListId . "')";
-			mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql);
+			$listService->createList($_POST["list_title"], $_POST["list_description"], $_SESSION["user"]);
 		}
+
 		if (strlen($errMsg) > 0) {
+			displayError ($errMsg);
 			$ltitle_in = $_POST["list_title"];
 			$ltype_in = $_POST["list_type"];
 			$ldesc_in = $_POST["list_description"];
 		}
+
 	}
 
-	WriteHeader (2, "Nerdery Lists");
-	writeCP ();
 ?>
 
 <script language="javascript" type="text/javascript">
@@ -127,7 +112,7 @@ require_once ('includes/list.functions.php');
 	<tr>
 		<td colspan="3" align="center">
 		<?php
-			writeLists ($filter_date);
+			$listService->writeLists ($filter_date);
 		?>
 		<br>
 		</td>
@@ -151,8 +136,8 @@ require_once ('includes/list.functions.php');
 			<table border="0" cellpadding="0" cellspacing="0" width="700">
 				<tr>
 					<td>
-						Fill out the form below and click on the "Create" button to add a new list for discussion and voting.  
-						All new lists will appear in the section above.  Once you have created the list, you will be able to 
+						Fill out the form below and click on the "Create" button to add a new list for discussion and voting.
+						All new lists will appear in the section above.  Once you have created the list, you will be able to
 						add or modify the items	on the list.
 					</td>
 				</tr>
@@ -178,7 +163,7 @@ require_once ('includes/list.functions.php');
 							$fstruct = array (
 								array ("paction", "", "hidden", "insertList", false),
 								array ("filterDate", "", "hidden", $filter_date, false),
-								array ("list_type", "List Type", "radio", array (array(0,"Private List", false), array (1, "Public List", true)), true), 
+								array ("list_type", "List Type", "radio", array (array(0,"Private List", false), array (1, "Public List", true)), true),
 								array ("list_title", "List Title", "text", $ltitle_in, true),
 								array ("list_description", "List Description", "textarea", $ldesc_in, true)
 							);
