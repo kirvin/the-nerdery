@@ -19,14 +19,11 @@ session_start ();
  */
 $application = &Application::getInstance();
 
-/*
- * Check for login
- */
-if (strcmp($_SERVER["PHP_SELF"], '/login.php') != 0) {
-	if ($_SESSION["ValidLogin"] != 1) {
-		header ("location: login.php?r=" . $_SERVER["PHP_SELF"]);
-	}
-}
+// get a reference to the list service
+$listService = ListService::getInstance();
+
+// Check for login
+checkSession();
 
 require_once ("includes/nerdery/net.theirvins.nerdery.util.FileManager.php");
 require_once ('includes/class.dropshadow.php');

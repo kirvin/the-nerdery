@@ -4,6 +4,7 @@ require_once ("includes/global_functions.php");
 require_once ('includes/cp.php');
 require_once ("includes/framework_functions.php");
 require_once ('includes/form_functions.php');
+require_once("includes/nerdery/net.theirvins.nerdery.services.ListService.php");
 ob_start();
 
 /*
@@ -18,13 +19,11 @@ session_start ();
  */
 $application = &Application::getInstance();
 
-/*
- * Check for login
- */
-if (strcmp($_SERVER["PHP_SELF"], '/login.php') != 0) {
-	if ($_SESSION["ValidLogin"] != 1)
-		header ("location: login.php?r=" . $_SERVER["PHP_SELF"]);
-}
+// get a reference to the list service
+$listService = ListService::getInstance();
+
+// Check for login
+checkSession();
 
 require ('includes/list.functions.php');
 
