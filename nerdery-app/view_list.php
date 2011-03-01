@@ -4,6 +4,7 @@ require_once ("includes/global_functions.php");
 require_once ('includes/cp.php');
 require_once ("includes/framework_functions.php");
 require_once ('includes/form_functions.php');
+require_once("includes/nerdery/net.theirvins.nerdery.services.ListService.php");
 ob_start();
 
 /*
@@ -42,7 +43,7 @@ require_once ('includes/list.functions.php');
 		$extension = FileManager::getExtensionForMimeType($_FILES, "item_file");
 
 		$sql = "INSERT INTO ListItems (ListID, ListItemOwner, CreatedDate, LastModified, ListItemFile, ListItemText, ListItemURL) " .
-			"VALUES (" . $list_id . ",'" . $_SESSION["UserID"] . "','" . date ("Y-m-d H:i:s") . "','" . date ("Y-m-d H:i:s") . 
+			"VALUES (" . $list_id . ",'" . $_SESSION["UserID"] . "','" . date ("Y-m-d H:i:s") . "','" . date ("Y-m-d H:i:s") .
 			"','" . $extension . "','" . $_POST["item_text"] . "','" . $_POST["item_url"] . "')";
 		mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql);
 		// get id of newly inserted record
@@ -55,7 +56,7 @@ require_once ('includes/list.functions.php');
 		if (FileManager::saveFile($_FILES, "item_file", $upload_path, $file_name)) {
 			// FIXME this isn't needed (?)
 			$sql = "UPDATE ListItems SET ListItemFile='" . $extension . "' WHERE ListItemID=" . $new_cnt;
-			mysql_query ($sql); 
+			mysql_query ($sql);
 		}
 //		if ($_FILES["item_file"]["name"]) {
 //			$upload_path = getListItemsUploadDir() . "/" . $list_id;
@@ -75,14 +76,14 @@ require_once ('includes/list.functions.php');
 //				$ds->saveFinal ($file);
 //			}
 //			$sql = "UPDATE ListItems SET ListItemFile='" . $extension . "' WHERE ListItemID=" . $new_cnt;
-//			mysql_query ($sql); 
+//			mysql_query ($sql);
 //		}
 		$sql = "UPDATE Lists SET LastModified='" . date ("Y-m-d H:i:s") . "' WHERE ListID=" . $list_id;
 		mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql);
 
 		// insert a record into the history table
 		$sql = "INSERT INTO NerderyEvents (EventTitle, EventDescription, UserID, EventTypeID, EventURL) " .
-			"VALUES ('" . $_SESSION["user"]->displayName . " added a new item to a list', CONCAT('" . 
+			"VALUES ('" . $_SESSION["user"]->displayName . " added a new item to a list', CONCAT('" .
 			$_SESSION["user"]->displayName . " added a new item to the list \"', " .
 			"(SELECT ListTitle FROM Lists WHERE ListID=" . $list_id . "), '\"'), " .
 			"'" . $_SESSION["UserID"] . "', " .
@@ -92,7 +93,7 @@ require_once ('includes/list.functions.php');
 	}
 
 
-	WriteHeader (2, "The Nerdery::View List"); 
+	WriteHeader (2, "The Nerdery::View List");
 	writeCP ();
 
 	$curr_list = new VotingList ($list_id);

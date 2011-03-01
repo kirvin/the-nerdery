@@ -1,5 +1,12 @@
 <?php
-ini_set("error_reporting", E_WARNING);
+require_once("nerdery/net.theirvins.util.Properties.php");
+$props = Properties::getInstance();
+$props->loadFromFile();
+
+$debug = ($props->getProperty("debug") == "true");
+if ($debug) {
+	ini_set("error_reporting", E_ALL);
+}
 
 date_default_timezone_set('America/Los_Angeles');
 
