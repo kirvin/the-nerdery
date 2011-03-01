@@ -41,7 +41,7 @@ require_once ('includes/list.functions.php');
 
 		$sql = "INSERT INTO ListItems (ListID, ListItemOwner, CreatedDate, LastModified, ListItemFile, ListItemText, ListItemURL) " .
 			"VALUES (" . $list_id . ",'" . $_SESSION["UserID"] . "','" . date ("Y-m-d H:i:s") . "','" . date ("Y-m-d H:i:s") .
-			"','" . $extension . "','" . $_POST["item_text"] . "','" . $_POST["item_url"] . "')";
+			"','" . $extension . "','" . mysql_escape_string($_POST["item_text"]) . "','" . $_POST["item_url"] . "')";
 		mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql);
 		// get id of newly inserted record
 		$new_cnt = mysql_insert_id();
