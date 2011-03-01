@@ -78,7 +78,7 @@ $err_msg = -1;
 	/*
 	 * Handle a logout request
 	 */
-	else if ($_GET["l"] == "true") {
+	else if (isset($_GET["l"]) && $_GET["l"] == "true") {
 		$sql = "SELECT S.*, U.* FROM Users AS U INNER JOIN UserSessions AS S ON U.UserID=S.UserID " .
 			"WHERE S.UserID='" . $_SESSION["UserID"] . "'";
 		$rs = mysql_query ($sql) or die ("ERROR: " . mysql_query() . "<br>SQL: " . $sql);
@@ -104,7 +104,7 @@ $err_msg = -1;
 			Application::getInstance()->save();
 		}
 	}
- 
+
 	WriteHeader (1, "The Nerdery User Login");
 ?>
 

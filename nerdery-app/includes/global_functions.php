@@ -1,5 +1,5 @@
 <?php
-ini_set("error_reporting", E_ALL);
+ini_set("error_reporting", E_WARNING);
 
 date_default_timezone_set('America/Los_Angeles');
 
