@@ -103,8 +103,8 @@ require_once ('includes/discussion.functions.php');
 			//$insert_sql = "INSERT INTO DiscussionComments (DiscussionID, CommentID, CommentSubject, CommentAuthor, CommentDate, CommentText, CommentLevel) " .
 			//	"VALUES (" . $_POST["discussion_id"] .",?,'')";
 			$sql = "INSERT INTO DiscussionComments (DiscussionID, CommentID, CommentSubject, CommentAuthor, CommentDate, CommentText, CommentLevel) " .
-				"VALUES (" . $parent->discussionID . "," . $nid . ",'" . $_POST["message_subject"] . "','" . 
-				$_SESSION["user"]->userID . "','" . date("Y-m-d H:i:s") . "','" . $_POST["message_text"] . "'," . ($parent->commentLevel+1) . ")";
+				"VALUES (" . $parent->discussionID . "," . $nid . ",'" . mysql_escape_string($_POST["message_subject"]) . "','" .
+				$_SESSION["user"]->userID . "','" . date("Y-m-d H:i:s") . "','" . mysql_escape_string($_POST["message_text"]) . "'," . ($parent->commentLevel+1) . ")";
 			mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql);
 		}
 		else {
@@ -113,15 +113,15 @@ require_once ('includes/discussion.functions.php');
 				$prev_comment = $old_thread->threadComments[count($old_thread->threadComments)-1];
 				$nid = $prev_comment->commentID + (($thread_end - $prev_comment->commentID) / 10);
 				$sql = "INSERT INTO DiscussionComments (DiscussionID, CommentID, CommentSubject, CommentAuthor, CommentDate, CommentText, CommentLevel) " .
-					"VALUES (" . $parent->discussionID . "," . $nid . ",'" . $_POST["message_subject"] . "','" . 
-					$_SESSION["user"]->userID . "','" . date("Y-m-d H:i:s") . "','" . $_POST["message_text"] . "'," . ($parent->commentLevel+1) . ")";
+					"VALUES (" . $parent->discussionID . "," . $nid . ",'" . mysql_escape_string($_POST["message_subject"]) . "','" .
+					$_SESSION["user"]->userID . "','" . date("Y-m-d H:i:s") . "','" . mysql_escape_string($_POST["message_text"]) . "'," . ($parent->commentLevel+1) . ")";
 				mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql);
 			}
 			else if ($next_parent_sibling !== null && $prev_comment !== null) {
 				$nid = $prev_comment->commentID + (($next_parent_sibling->commentID - $prev_comment->commentID) / 10);
 				$sql = "INSERT INTO DiscussionComments (DiscussionID, CommentID, CommentSubject, CommentAuthor, CommentDate, CommentText, CommentLevel) " .
-					"VALUES (" . $parent->discussionID . "," . $nid . ",'" . $_POST["message_subject"] . "','" . 
-					$_SESSION["user"]->userID . "','" . date("Y-m-d H:i:s") . "','" . $_POST["message_text"] . "'," . ($parent->commentLevel+1) . ")";
+					"VALUES (" . $parent->discussionID . "," . $nid . ",'" . mysql_escape_string($_POST["message_subject"]) . "','" .
+					$_SESSION["user"]->userID . "','" . date("Y-m-d H:i:s") . "','" . mysql_escape_string($_POST["message_text"]) . "'," . ($parent->commentLevel+1) . ")";
 				mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql);
 			}
 		}
@@ -130,7 +130,7 @@ require_once ('includes/discussion.functions.php');
 
 		// insert a record into the history table
 		$sql = "INSERT INTO NerderyEvents (EventTitle, EventDescription, UserID, EventTypeID, EventURL) " .
-			"VALUES ('" . $_SESSION["user"]->displayName . " added \$0.02 or less to a discussion', CONCAT('" . 
+			"VALUES ('" . $_SESSION["user"]->displayName . " added \$0.02 or less to a discussion', CONCAT('" .
 			$_SESSION["user"]->displayName . " posted a comment in the discussion \"', " .
 			"(SELECT DiscussionTitle FROM Discussions WHERE DiscussionID=" . $discussion_id . "), '\"'), " .
 			"'" . $_SESSION["UserID"] . "', " .
@@ -140,8 +140,8 @@ require_once ('includes/discussion.functions.php');
 
 		/*
 		echo "insert reply between " . $parent->commentID . " and " . $after->commentID . "<br>";
-		
-		$sql = "SELECT MIN(CommentID) AS NextSibling FROM DiscussionComments WHERE DiscussionID=" . 
+
+		$sql = "SELECT MIN(CommentID) AS NextSibling FROM DiscussionComments WHERE DiscussionID=" .
 			$_POST["discussion_id"] . " AND CommentLevel=" . $parent->commentLevel . " AND CommentID > " .
 			$parent->commentID . " GROUP BY DiscussionID";
 		echo $sql . "<br>";
@@ -151,8 +151,8 @@ require_once ('includes/discussion.functions.php');
 			echo "[1]nothing found as parent's next sibling, add at end<br>";
 			// get the id of the last comment in the discussion here (should be the last comment in this thread)
 			// and find some comment id between the last comment id and the next whole number
-			$sql = "SELECT MAX(CommentID) AS LastComment FROM DiscussionComments WHERE DiscussionID=" . 
-				$_POST["discussion_id"] . " AND CommentID > " . $parent->commentID . " AND CommentLevel > " . 
+			$sql = "SELECT MAX(CommentID) AS LastComment FROM DiscussionComments WHERE DiscussionID=" .
+				$_POST["discussion_id"] . " AND CommentID > " . $parent->commentID . " AND CommentLevel > " .
 				$parent->commentLevel;
 			$rs = mysql_query ($sql) or die ("ERROR: " . mysql_error());
 			$row = mysql_fetch_array ($rs);
@@ -165,8 +165,8 @@ require_once ('includes/discussion.functions.php');
 				echo "[2]nothing found as parent's next sibling, add at end<br>";
 				$sql = "SELECT MAX(CommentID) AS LastComment WHERE CommentID < " . ceil($parent);
 				echo $sql . "<br>";
-				// get the id of the last comment with the same floor as the $parent (Max comment id where 
-				// comment id < ceiling ($parent)) and find some comment id between the last comment id and 
+				// get the id of the last comment with the same floor as the $parent (Max comment id where
+				// comment id < ceiling ($parent)) and find some comment id between the last comment id and
 				// the next whole number
 			}
 			else {
@@ -179,7 +179,7 @@ require_once ('includes/discussion.functions.php');
 				if (mysql_num_rows($rs) > 0) {
 					$oc = mysql_fetch_array ($rs);
 					echo "add between " . $oc["OldestChild"] . " and " . $after_cid;
-					
+
 				}
 				else {
 					echo "nothing found as oldest child, add between parent and parent's next sibling.<br>";
@@ -193,14 +193,14 @@ require_once ('includes/discussion.functions.php');
 		*/
 
 
-		/*				
+		/*
 		$sql = "SELECT MAX (CommentID) AS LastChild FROM DiscussionComments WHERE DiscussionID=" . $_POST["discussion_id"] .
-			" AND CommentLevel > " . $before->commentLevel . " AND CommentID > " . $before->commentID . 
+			" AND CommentLevel > " . $before->commentLevel . " AND CommentID > " . $before->commentID .
 			" AND CommentID < ";
 		*/
 	}
 
-	WriteHeader (4, "The Nerdery::View Discussion Thread"); 
+	WriteHeader (4, "The Nerdery::View Discussion Thread");
 	writeCP ();
 ?>
 
@@ -209,7 +209,7 @@ require_once ('includes/discussion.functions.php');
 		document.redirectForm.page.value = pid;
 		document.redirectForm.submit ();
 	}
-	
+
 	function viewDiscussion (did, p) {
 		document.redirectForm.action = "view_discussion.php";
 		document.redirectForm.discussion_id.value = did;
@@ -223,12 +223,12 @@ require_once ('includes/discussion.functions.php');
 		document.redirectForm.page.value = 1;
 		document.redirectForm.submit ();
 	}
-	
+
 	function replyToComment (cid) {
 		document.redirectForm.action = "view_thread.php";
 		document.redirectForm.paction.value = "composeReply";
 		document.redirectForm.comment_id.value = cid;
-		document.redirectForm.submit ();	
+		document.redirectForm.submit ();
 	}
 </script>
 
@@ -296,7 +296,7 @@ require_once ('includes/discussion.functions.php');
 		</tr>
 	</table>
 	<br>
-<?php		
+<?php
 	}
 ?>
 
@@ -310,7 +310,7 @@ require_once ('includes/discussion.functions.php');
 						<span class="boldWhiteMediumText">
 						<?php
 							echo "<a class=\"boldWhiteLink\" href=\"discuss.php\">Discussions</a>&nbsp;&gt;&gt;&nbsp;";
-							echo "<a class=\"boldWhiteLink\" href=\"javascript: viewDiscussion(" . 
+							echo "<a class=\"boldWhiteLink\" href=\"javascript: viewDiscussion(" .
 								$curr_thread->discussionID . "," . $curr_page . ");\">";
 							if (strlen($curr_thread->discussionTitle) > 15)
 								echo substr ($curr_thread->discussionTitle, 0, 15) . "...";

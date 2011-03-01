@@ -33,8 +33,8 @@ require_once ('includes/class.dropshadow.php');
 	$journal_id = -1;
 	if ($page_action == "insertNewsColumn") {
 		$sql = "INSERT INTO Journals (JournalTitle, JournalOwner, JournalDescription, CreatedDate, LastModified) " .
-			"VALUES ('" . $_POST["column_title"] . "','" . $_SESSION["UserID"] . "','" . 
-			$_POST["column_description"] . "','" . date ("Y-m-d H:i:s a") . "','" . date ("Y-m-d H:i:s a") . "')";
+			"VALUES ('" . mysql_escape_string($_POST["column_title"]) . "','" . $_SESSION["UserID"] . "','" .
+			mysql_escape_string($_POST["column_description"]) . "','" . date ("Y-m-d H:i:s a") . "','" . date ("Y-m-d H:i:s a") . "')";
 		mysql_query ($sql) or die ("ERROR: " . mysql_error () . "<br>SQL: " . $sql);
 		$journal_id = mysql_insert_id();
 	}
@@ -52,8 +52,8 @@ require_once ('includes/class.dropshadow.php');
 		$extension = FileManager::getExtensionForMimeType($_FILES, "item_file");
 
 		$sql = "INSERT INTO JournalEntries (JournalID, JournalEntryDate, LastModified, JournalEntrySubject, JournalEntryText, FileExtension, JournalEntryAuthor) " .
-			"VALUES (" . $journal_id . ",'" . date ("Y-m-d H:i:s") . "','" . date ("Y-m-d H:i:s") . "','" . $_POST["item_title"] . "','" . 
-			$_POST["item_description"] . "','" . $extension . "','" . $_SESSION["UserID"] . "')";
+			"VALUES (" . $journal_id . ",'" . date ("Y-m-d H:i:s") . "','" . date ("Y-m-d H:i:s") . "','" . mysql_escape_string($_POST["item_title"]) . "','" .
+			mysql_escape_string($_POST["item_description"]) . "','" . $extension . "','" . $_SESSION["UserID"] . "')";
 		mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql . "<br>");
 		$nid = mysql_insert_id();
 		$sql = "UPDATE Journals SET LastModified='" . date ("Y-m-d H:i:s a") . "' WHERE JournalID=" . $journal_id;
@@ -64,7 +64,7 @@ require_once ('includes/class.dropshadow.php');
 		FileManager::saveFile($_FILES, "item_file", $upload_path, $file_name);
 //		if (FileManager::saveFile($_FILES, "item_file", $upload_path, $file_name)) {
 //			$sql = "UPDATE JournalEntries SET FileExtension='" . $extension . "' WHERE JournalEntryId=" . $new_cnt;
-//			mysql_query ($sql); 
+//			mysql_query ($sql);
 //		}
 //		if (strlen ($_FILES["item_file"]["name"]) > 0) {
 //			$td = getTempDir();
@@ -106,9 +106,9 @@ require_once ('includes/class.dropshadow.php');
 //			die();
 	}
 
-	WriteHeader (5, "The Nerdery::News"); 
+	WriteHeader (5, "The Nerdery::News");
 	writeCP ();
-	
+
 	$sql = "SELECT * FROM Journals WHERE JournalID=$journal_id";
 	$rs = mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql . "<br>");
 	$row = mysql_fetch_array ($rs);

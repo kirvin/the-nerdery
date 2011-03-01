@@ -52,14 +52,14 @@ require_once ('includes/discussion.functions.php');
 	//----------------------------------------------------------------------
 	if ($page_action == "insertDiscussion") {
 		$sql = "INSERT INTO Discussions (DiscussionTitle, CreatedDate, LastModified, DiscussionDescription) VALUES ('" .
-			$_POST["discussion_title"] . "','" . date("Y-m-d H:i:s") . "','" . date("Y-m-d H:i:s") . "','" . 
-			$_POST["discussion_description"] . "')";
+			mysql_escape_string($_POST["discussion_title"]) . "','" . date("Y-m-d H:i:s") . "','" . date("Y-m-d H:i:s") . "','" .
+			mysql_escape_string($_POST["discussion_description"]) . "')";
 		mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql . "<br>");
 		$discussion_id = mysql_insert_id ();
 
 		// insert a record into the history table
 		$sql = "INSERT INTO NerderyEvents (EventTitle, EventDescription, UserID, EventTypeID, EventURL) " .
-			"VALUES ('" . $_SESSION["user"]->displayName . " created a new discussion', CONCAT('" . 
+			"VALUES ('" . $_SESSION["user"]->displayName . " created a new discussion', CONCAT('" .
 			$_SESSION["user"]->displayName . " created the discussion \"', " .
 			"(SELECT DiscussionTitle FROM Discussions WHERE DiscussionID=" . $discussion_id . "), '\"'), " .
 			"'" . $_SESSION["UserID"] . "', " .
@@ -77,15 +77,15 @@ require_once ('includes/discussion.functions.php');
 		$nid = $row["CommentCount"];
 		if ($nid != -1) {
 			$sql = "INSERT INTO DiscussionComments (DiscussionID, CommentID, CommentSubject, CommentAuthor, CommentDate, " .
-				"CommentText, CommentLevel) VALUES (" . $discussion_id . "," . ($nid + 1) . ",'" . $_POST["message_subject"] . "','" . 
-				$_SESSION["user"]->userID . "','" . date("Y-m-d H:i:s") . "','" . $_POST["message_text"] . "',1)";
+				"CommentText, CommentLevel) VALUES (" . $discussion_id . "," . ($nid + 1) . ",'" . mysql_escape_string($_POST["message_subject"]) . "','" .
+				$_SESSION["user"]->userID . "','" . date("Y-m-d H:i:s") . "','" . mysql_escape_string($_POST["message_text"]) . "',1)";
 			mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql . "<br>");
 			$sql = "UPDATE Discussions SET LastModified='" . date("Y-m-d H:i:s") . "' WHERE DiscussionID=" . $discussion_id;
 			mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql . "<br>");
 
 			// insert a record into the history table
 			$sql = "INSERT INTO NerderyEvents (EventTitle, EventDescription, UserID, EventTypeID, EventURL) " .
-				"VALUES ('" . $_SESSION["user"]->displayName . " created a new discussion topic', CONCAT('" . 
+				"VALUES ('" . $_SESSION["user"]->displayName . " created a new discussion topic', CONCAT('" .
 				$_SESSION["user"]->displayName . " started a new discussion topic in \"', " .
 				"(SELECT DiscussionTitle FROM Discussions WHERE DiscussionID=" . $discussion_id . "), '\"'), " .
 				"'" . $_SESSION["UserID"] . "', " .
@@ -95,7 +95,7 @@ require_once ('includes/discussion.functions.php');
 		}
 	}
 
-	WriteHeader (4, "The Nerdery::View Discussion"); 
+	WriteHeader (4, "The Nerdery::View Discussion");
 	writeCP ();
 ?>
 

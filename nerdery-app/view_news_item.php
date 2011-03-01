@@ -46,7 +46,7 @@ if (strcmp($_SERVER["PHP_SELF"], '/login.php') != 0) {
 	//-------------------------------------------------------------------------
 	if ($page_action == "insertComment") {
 		$sql = "INSERT INTO JournalEntryComments (JournalEntryID, CreatedDate, CommentAuthor, CommentText) " .
-			"VALUES (" . $item_id . ",'" . date ("Y-m-d H:i:s") . "','" . $_SESSION["UserID"] . "','" . $_POST["comment_text"] . "')";
+			"VALUES (" . $item_id . ",'" . date ("Y-m-d H:i:s") . "','" . $_SESSION["UserID"] . "','" . mysql_escape_string($_POST["comment_text"]) . "')";
 		mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql . "<br>");
 		$sql = "UPDATE JournalEntries SET LastModified='" . date ("Y-m-d H:i:s") . "' WHERE JournalEntryID=" . $item_id;
 		mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql . "<br>");
@@ -59,11 +59,11 @@ if (strcmp($_SERVER["PHP_SELF"], '/login.php') != 0) {
         	"'" . $_SESSION["UserID"] . "', (SELECT EventTypeID FROM NerderyEventType WHERE EventTypeName='NewsComment'), '/view_news_item.php?j=" . $journal_id . "&e=" . $item_id . "')";
         mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql);
 	}
-		
 
-	WriteHeader (5, "The Nerdery::News"); 
+
+	WriteHeader (5, "The Nerdery::News");
 	writeCP ();
-	
+
 	$sql = "SELECT * FROM Journals WHERE JournalID=$journal_id";
 	$rs = mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>SQL: " . $sql . "<br>");
 	$row = mysql_fetch_array ($rs);
@@ -103,7 +103,7 @@ if (strcmp($_SERVER["PHP_SELF"], '/login.php') != 0) {
 		<td></td>
 	</tr>
 	<tr><td colspan="3"><br></td></tr>
-	
+
 	<!-- comments for this news item -->
 	<tr>
 		<td width="25" background="images/section.header.bg.gif"><img height="32" width="25" src="images/section.header.w.gif"></td>
