@@ -2,6 +2,7 @@
 require_once("nerdery/net.theirvins.util.Properties.php");
 $props = Properties::getInstance();
 $props->loadFromFile();
+print_r($props);
 
 $debug = ($props->getProperty("debug") == "true");
 if ($debug) {
