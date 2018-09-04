@@ -2,7 +2,6 @@
 require_once("nerdery/net.theirvins.util.Properties.php");
 $props = Properties::getInstance();
 $props->loadFromFile();
-print_r($props);
 
 $debug = ($props->getProperty("debug") == "true");
 if ($debug) {
@@ -30,14 +29,10 @@ require_once ("nerdery/net.theirvins.nerdery.domain.User.php");
 
 	$MYSQL_DATE_FORMAT = "Y-m-d h:i:s";
 
-//	$db_server = "localhost";
-//	$db_uid = "their2_admin";
-//	$db_pwd = "bignose";
-//	$db_name = "their2_theirvins";
-	$db_server = "localhost";
-	$db_uid = "nerdery_db";
-	$db_pwd = "!AmTheNerdery";
-	$db_name = "nerdery";
+	$db_server = $props->getProperty("db.server");
+	$db_uid = $props->getProperty("db.username");
+	$db_pwd = $props->getProperty("db.password");
+	$db_name = $props->getProperty("db.name");
 
 
 	/**
@@ -82,6 +77,7 @@ require_once ("nerdery/net.theirvins.nerdery.domain.User.php");
 			// if now - SessionTime in db is greater than cookie lifetime, then the user has timed out
 			$row = mysql_fetch_array($result);
 			if (($now - strtotime ($row["SessionTime"])) > $max) {
+				echo "SESSION EXPIRED";
 				$sql ="DELETE FROM UserSessions WHERE UserID='" . $_SESSION["UserID"] . "'";
 				mysql_query ($sql) or die ("ERROR: " . mysql_error() . "<br>" . $sql);
 
@@ -301,8 +297,13 @@ require_once ("nerdery/net.theirvins.nerdery.domain.User.php");
 		return ((getYear($dayInYear1)*365 + $dayInYear1) - (getYear($dayInYear2)*365 + $dayInYear2));
 	}
 
-	$db = mysql_connect($GLOBALS["db_server"], $GLOBALS["db_uid"], $GLOBALS["db_pwd"]) or die("Could not connect : " . mysql_error());
-	mysql_select_db($GLOBALS["db_name"]) or die("Could not select database");
+	$db = mysql_connect(
+		$props->getProperty("db.server"),
+		$props->getProperty("db.username"),
+		$props->getProperty("db.password")
+	) or die("Could not connect : " . mysql_error());
+	mysql_select_db($props->getProperty("db.name")) or die(mysql_error());
+
 	//-------------------------------------------------------------------------
 	// Traps "paction" form variable
 	//-------------------------------------------------------------------------
@@ -312,6 +313,4 @@ require_once ("nerdery/net.theirvins.nerdery.domain.User.php");
 		$page_action = $_GET["paction"];
 	else
 		$page_action = "";
-
-
 ?>

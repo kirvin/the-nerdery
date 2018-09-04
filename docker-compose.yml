@@ -1,7 +1,8 @@
 version: '3'
 services:
   web:
-    build: .
+    build:
+      context: nerdery-app
     ports:
      - "80:80"
     volumes:
@@ -9,8 +10,14 @@ services:
     links:
       - mysql:mysql
   mysql:
-    image: "mysql:latest"
+    build:
+      context: mysql
+      args:
+        mysql_root_password: thenerdery
+        nerdery_db_name: thenerdery
     ports:
      - "3306:3306"
+    volumes:
+      - ./volumes/mysql-files:/var/lib/mysql
     environment:
      - MYSQL_ROOT_PASSWORD=thenerdery

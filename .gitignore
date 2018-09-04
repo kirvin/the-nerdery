@@ -1,1 +1,8 @@
 .DS_Store
+*/.DS_Store
+
+nerdery-app/nerdery.properties
+mysql/source-data/*.sql
+nerdery-app/cache
+volumes/mysql-files/*
+!volumes/mysql-files/.gitkeep
