@@ -1,2 +1,0 @@
-#PHP_value auto_prepend_file request_start.php
-#PHP_value auto_append_file request_end.php
