@@ -8,9 +8,11 @@ This document outlines the sequential tasks required to implement the Proof-of-C
 *   `[x] Task 2: Database Schema Migration`
 *   `[x] Task 3: UserService Implementation`
 *   `[x] Task 4: Apollo Gateway Implementation`
-*   `[ ] Task 5: Legacy Data Migration Script`
-*   `[ ] Task 6: Web Client (Remix) Implementation`
-*   `[ ] Task 7: PoC Final Validation`
+*   `[x] Task 5: Legacy Data Migration Script`
+*   `[x] Task 6: ContentService Implementation`
+*   `[ ] Task 7: Web Client (Remix) Implementation`
+*   `[ ] Task 8: PoC Final Validation`
+*   `[x] Task 9: Create "dev" script`
 
 ---
 
@@ -63,22 +65,44 @@ This document outlines the sequential tasks required to implement the Proof-of-C
 
 ---
 
-### Task 6: Web Client (Remix) Implementation
+### Task 6: `ContentService` Implementation
+*   **Description:** Implement the `ContentService` to handle all content-related features.
+*   **Sub-tasks:**
+    *   6.1: Define the database schema for the `ContentService`.
+    *   6.2: Define the GraphQL schema for the `ContentService`.
+    *   6.3: Create the database migrations to create the new tables.
+    *   6.4: Implement all of the queries and mutations for the `ContentService`.
+*   **Expected Outcome:** A runnable, standalone GraphQL service that can manage all content-related features.
+
+---
+
+### Task 7: Web Client (Remix) Implementation
 *   **Description:** Build the client-side UI for the user registration and login PoC.
 *   **Sub-tasks:**
-    *   6.1: Initialize a new Remix application in the web app directory.
-    *   6.2: Create the UI components for registration and login forms.
-    *   6.3: Set up an Apollo Client instance to communicate with the GraphQL gateway.
-    *   6.4: Connect the UI to the `register` and `login` mutations.
+    *   7.1: Initialize a new Remix application in the web app directory.
+    *   7.2: Create the UI components for registration and login forms.
+    *   7.3: Set up an Apollo Client instance to communicate with the GraphQL gateway.
+    *   7.4: Connect the UI to the `register` and `login` mutations.
 *   **Expected Outcome:** A user can visit the web application in a browser, register a new account, and log in successfully.
 
 ---
 
-### Task 7: PoC Final Validation
+### Task 8: PoC Final Validation
 *   **Description:** Perform an end-to-end test of the entire PoC.
 *   **Sub-tasks:**
-    *   7.1: Run the data migration script.
-    *   7.2: Start all services (`docker-compose up`).
-    *   7.3: In the web client, attempt to log in with a migrated user account.
-    *   7.4: In the web client, register a completely new user.
+    *   8.1: Run the data migration script.
+    *   8.2: Start all services (`docker-compose up`).
+    *   8.3: In the web client, attempt to log in with a migrated user account.
+    *   8.4: In the web client, register a completely new user.
 *   **Expected Outcome:** All steps complete successfully, proving the viability of the architecture and migration plan.
+
+---
+
+### Task 9: Create "dev" script
+*   **Description:** Create a "dev" script to provide an easy entry point for local development and testing.
+*   **Sub-tasks:**
+    *   9.1: The script should be able to run unit tests.
+    *   9.2: The script should be able to run integration tests.
+    *   9.3: The script should be able to start the dev environment.
+    *   9.4: The script should be able to stop the dev environment.
+*   **Expected Outcome:** A developer can use the "dev" script to manage their local development and testing workflow.

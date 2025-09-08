@@ -100,3 +100,13 @@ This document outlines the functional requirements for the new social media appl
 13.1: THE SYSTEM SHALL expose all of its functionality through a comprehensive GraphQL API.
 13.2: THE SYSTEM SHALL provide a full-featured web application that consumes the GraphQL API.
 13.3: THE SYSTEM SHALL provide a full-featured iOS mobile application that consumes the GraphQL API.
+
+## Developer Experience
+
+### Requirement 14: Local Development Entry Point
+**User Story:** As a developer, I want a single, easy-to-use script to manage common local development and testing tasks so that I can streamline my workflow.
+**Acceptance Criteria:**
+14.1: THE SYSTEM SHALL provide a script that can run all unit tests.
+14.2: THE SYSTEM SHALL provide a script that can run all integration tests.
+14.3: THE SYSTEM SHALL provide a script that can start the entire local development environment (all services and databases).
+14.4: THE SYSTEM SHALL provide a script that can stop the entire local development environment.

@@ -3,3 +3,6 @@ nerdery-legacy/backup
 
 node_modules
 .DS_Store
+.turbo
+
+.env
