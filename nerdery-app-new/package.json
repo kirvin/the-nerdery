@@ -1,0 +1,23 @@
+{
+  "name": "nerdery-app-new",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "db:migrate:create": "node-pg-migrate --config node-pg-migrate-config.js create",
+    "db:migrate:up": "node-pg-migrate --config node-pg-migrate-config.js up",
+    "db:migrate:down": "node-pg-migrate --config node-pg-migrate-config.js down"
+  },
+  "devDependencies": {
+    "node-pg-migrate": "^8.0.3",
+    "prettier": "^3.2.5",
+    "turbo": "latest"
+  },
+  "packageManager": "npm@10.5.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
